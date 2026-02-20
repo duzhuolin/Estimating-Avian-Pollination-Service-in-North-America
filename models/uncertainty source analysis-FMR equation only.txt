@@ -1,0 +1,121 @@
+### FMR equation is the only source of uncertainty
+
+FVR_list_fmr <- vector("list", nrow(pol_param))
+
+set.seed(666)
+
+for (i in seq_len(nrow(pol_param))) {
+  r <- pol_param[i,]
+  
+  # no variance in body mass
+  ms <- rep(r$mass_mean, N_FVR_DRAWS)
+  
+  # assuming predicted FMR follows log-normal dist
+  if (r$FMR_pred_a <= 0) stop("FMR_pred_a must be > 0")
+  log10FMR_mean <- log10(r$FMR_pred_a) + r$FMR_pred_b * log10(ms)  #predicted FMR treated as median
+  lnFMR_mean <- log10FMR_mean*log(10)
+  log10FMR_sd <- r$c * sqrt(pmax(0, r$d + r$e * (log10(ms) - r$mean.log.x)^2)) / 1.96  #log-scale SD derived from Nagy’s 95% prediction interval
+  lnFMR_sd <- log10FMR_sd*log(10)
+  
+  lnFMR <- rnorm(N_FVR_DRAWS, lnFMR_mean, lnFMR_sd)
+  FMR  <- exp(lnFMR) #kJ/day
+  
+  # no variance in FN and FNE
+  FN  <- rep(r$FN_mean, N_FVR_DRAWS)
+  FNE <- rep(r$FNE_mean, N_FVR_DRAWS)
+
+  # no variance in NC and NV
+  NV <- rep(r$NV_mean, N_FVR_DRAWS)
+  NC <- rep(r$NC_mean, N_FVR_DRAWS)
+  
+  EperF <- NV * ul2ml * EC_sucorse * FNE * NC # energy provided by each flower in kJ/flower
+  FVR   <- FMR * FN / EperF     # visits per day in flowers/day
+  
+  FVR_list_fmr[[i]] <- data.table(
+    species        = r$species,                 # aligned species name
+    draw_fvr       = seq_len(N_FVR_DRAWS),      # local draw index
+    FVR            = FVR,
+    Service_days   = r$Service_days           # days stayed in North America
+    # Breeding.Biome = r$Breeding.Biome,          # carried for grouping (if present)
+    # Winter.Biome   = r$Winter.Biome,
+    # Family         = r$Family,
+    # Order          = r$Order,
+    # specialization_lvl    = r$specialization_lvl,
+    # Habitat          = r$Habitat
+  )
+}
+FVR_dt_fmr <- rbindlist(FVR_list_fmr)
+
+#----------------------------------------------------------------
+# Calculating annual flower visits of each species
+# FVR*Population abundance*Service days
+
+K_pop_fmr <- max(N_long$draw)
+
+FVR_dt_fmr[, draw := ((draw_fvr - 1L) %% K_pop_fmr) + 1L]
+
+# no variance in N
+N1970_fmr <- spyr_summ[year == 1970][, .(year, species, N_med)]
+N2017_fmr <- spyr_summ[year == 2017][, .(year, species, N_med)]
+
+setkey(FVR_dt_fmr, species, draw)
+setkey(N1970_fmr, species)
+setkey(N2017_fmr, species)
+
+spyr_fmr_1970 <- merge(
+  N1970_fmr,
+  FVR_dt_fmr[, .(species, draw, FVR, Service_days)],
+  by = c("species"),
+  allow.cartesian = TRUE
+)
+
+spyr_fmr_2017 <- merge(
+  N2017_fmr,
+  FVR_dt_fmr[, .(species, draw, FVR, Service_days)],
+  by = c("species"),
+  allow.cartesian = TRUE
+)
+
+spyr_fmr_1970[, annual.FV := FVR * Service_days * N_med] # visits per year
+spyr_fmr_2017[, annual.FV := FVR * Service_days * N_med] # visits per year
+
+
+# -------------------------- Aggregations by continent ---------------------------------
+# Continental level: sum across all species (year x draw)
+cont_fmr_1970 <- spyr_fmr_1970[, .(annual.FV = sum(annual.FV)), by = .(year, draw)]
+cont_fmr_2017 <- spyr_fmr_2017[, .(annual.FV = sum(annual.FV)), by = .(year, draw)]
+
+cont_summ_fmr_1970 <- cont_fmr_1970[, {
+  cAFV <- summarize_draws_90(annual.FV)
+  out  <- setNames(cAFV, paste0("AFV_", names(cAFV)))
+  out
+}, by = character(0)]
+
+cont_summ_fmr_2017 <- cont_fmr_2017[, {
+  cAFV <- summarize_draws_90(annual.FV)
+  out  <- setNames(cAFV, paste0("AFV_", names(cAFV)))
+  out
+}, by = character(0)]
+
+
+# -------------------------- 5 to 95 percentile range -------------------
+
+fmr_range_1970 <- cont_summ_fmr_1970$AFV_uci - cont_summ_fmr_1970$AFV_lci
+fmr_range_2017 <- cont_summ_fmr_2017$AFV_uci - cont_summ_fmr_2017$AFV_lci
+
+
+# ----------- Divide the percentile range of the individual errors by the total error ---------------------------------
+
+fmr_1970_error_prop <- fmr_range_1970 / (cont_summ_90[year==1970]$AFV_uci-cont_summ_90[year==1970]$AFV_lci)
+fmr_2017_error_prop <- fmr_range_2017 / (cont_summ_90[year==2017]$AFV_uci-cont_summ_90[year==2017]$AFV_lci)
+
+
+# --------- Contribution to the uncertainty of cumulative change in continental-level AFV ---------------
+cont_fmr <- rbind(cont_fmr_1970, cont_fmr_2017)
+
+cont_chg_summ_fmr <- Change_trajectory_90(cont_fmr,      value_col = "annual.FV", by_cols = character(0))
+
+fmr_range_chg <- cont_chg_summ_fmr[year==2017]$uci - cont_chg_summ_fmr[year==2017]$lci
+
+fmr_chg_prop <- fmr_range_chg / (cont_chg_AFV_90[year==2017]$uci-cont_chg_AFV_90[year==2017]$lci)
+
