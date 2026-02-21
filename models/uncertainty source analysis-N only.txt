@@ -1,0 +1,111 @@
+### N is the only source of uncertainty
+
+FVR_list_n <- vector("list", nrow(pol_param))
+
+set.seed(666)
+
+for (i in seq_len(nrow(pol_param))) {
+  r <- pol_param[i,]
+  
+  # no variance in body mass
+  ms <- rep(r$mass_mean, N_FVR_DRAWS) 
+  
+  # no variance in FMR equation
+  if (r$FMR_pred_a <= 0) stop("FMR_pred_a must be > 0") 
+  FMR <- r$FMR_pred_a*ms^r$FMR_pred_b
+  
+  # no variance in FN and FNE
+  FN  <- rep(r$FN_mean, N_FVR_DRAWS)
+  FNE <- rep(r$FNE_mean, N_FVR_DRAWS)
+
+  # no variance in NC and NV
+  NV <- rep(r$NV_mean, N_FVR_DRAWS)
+  NC <- rep(r$NC_mean, N_FVR_DRAWS)
+  
+  EperF <- NV * ul2ml * EC_sucorse * FNE * NC # energy provided by each flower in kJ/flower
+  FVR   <- FMR * FN / EperF     # visits per day in flowers/day
+  
+  FVR_list_n[[i]] <- data.table(
+    species        = r$species,                 # aligned species name
+    draw_fvr       = seq_len(N_FVR_DRAWS),      # local draw index
+    FVR            = FVR,
+    Service_days   = r$Service_days           # days stayed in North America
+    # Breeding.Biome = r$Breeding.Biome,          # carried for grouping (if present)
+    # Winter.Biome   = r$Winter.Biome,
+    # Family         = r$Family,
+    # Order          = r$Order,
+    # specialization_lvl    = r$specialization_lvl,
+    # Habitat          = r$Habitat
+  )
+}
+FVR_dt_n <- rbindlist(FVR_list_n)
+
+#----------------------------------------------------------------
+# Calculating annual flower visits of each species
+# FVR*Population abundance*Service days
+
+K_pop_n <- max(N_long$draw)
+
+FVR_dt_n[, draw := ((draw_fvr - 1L) %% K_pop_n) + 1L]
+
+# uncertainty from N
+setkey(FVR_dt_n, species, draw)
+setkey(N_long, species, draw)
+
+spyr_n_1970 <- merge(
+  N_long[year==1970][, .(year, species, draw, N_draw)],
+  FVR_dt_n[, .(species, draw, FVR, Service_days)],
+  by = c("species", "draw"),
+  allow.cartesian = TRUE
+)
+
+spyr_n_2017 <- merge(
+  N_long[year==2017][, .(year, species, draw, N_draw)],
+  FVR_dt_n[, .(species, draw, FVR, Service_days)],
+  by = c("species", "draw"),
+  allow.cartesian = TRUE
+)
+
+spyr_n_1970[, annual.FV := FVR * Service_days * N_draw] # visits per year
+spyr_n_2017[, annual.FV := FVR * Service_days * N_draw] # visits per year
+
+
+# -------------------------- Aggregations by continent ---------------------------------
+# Continental level: sum across all species (year x draw)
+cont_n_1970 <- spyr_n_1970[, .(annual.FV = sum(annual.FV)), by = .(year, draw)]
+cont_n_2017 <- spyr_n_2017[, .(annual.FV = sum(annual.FV)), by = .(year, draw)]
+
+cont_summ_n_1970 <- cont_n_1970[, {
+  cAFV <- summarize_draws_90(annual.FV)
+  out  <- setNames(cAFV, paste0("AFV_", names(cAFV)))
+  out
+}, by = character(0)]
+
+cont_summ_n_2017 <- cont_n_2017[, {
+  cAFV <- summarize_draws_90(annual.FV)
+  out  <- setNames(cAFV, paste0("AFV_", names(cAFV)))
+  out
+}, by = character(0)]
+
+
+# -------------------------- 5 to 95 percentile range -------------------
+
+n_range_1970 <- cont_summ_n_1970$AFV_uci - cont_summ_n_1970$AFV_lci
+n_range_2017 <- cont_summ_n_2017$AFV_uci - cont_summ_n_2017$AFV_lci
+
+
+# ----------- Divide the percentile range of the individual errors by the total error ---------------------------------
+
+n_1970_error_prop <- n_range_1970 / (cont_summ_90[year==1970]$AFV_uci-cont_summ_90[year==1970]$AFV_lci)
+n_2017_error_prop <- n_range_2017 / (cont_summ_90[year==2017]$AFV_uci-cont_summ_90[year==2017]$AFV_lci)
+
+
+# --------- Contribution to the uncertainty of cumulative change in continental-level AFV ---------------
+cont_n <- rbind(cont_n_1970, cont_n_2017)
+
+cont_chg_summ_n <- Change_trajectory_90(cont_n,      value_col = "annual.FV", by_cols = character(0))
+
+n_range_chg <- cont_chg_summ_n[year==2017]$uci - cont_chg_summ_n[year==2017]$lci
+
+n_chg_prop <- n_range_chg / (cont_chg_AFV_90[year==2017]$uci-cont_chg_AFV_90[year==2017]$lci)
+
