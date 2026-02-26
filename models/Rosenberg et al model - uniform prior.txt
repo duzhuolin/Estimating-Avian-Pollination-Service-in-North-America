@@ -94,7 +94,8 @@ expm2[m,y] <-exp(m.logtheta2[m,y]) #exponentiated average of the log-indices - g
 for(g in 1:ngroups1){
 #first year group means
 mu.logtheta1[g,1] <- 0 #~ dnorm( 0.0,0.1) #prior for the mean for each wintering group e.g., chihuahan dessert
-tau.mu1.y[g] ~ dgamma(0.001,0.001) # precision of hte first-difference time-series for group 1 means
+sigma.mu1.y[g] ~ dunif(0, 1)      # weakly-informative prior on sd of yearly log-index differences for group 1
+tau.mu1.y[g] <- 1 / pow(sigma.mu1.y[g], 2) # precision of hte first-difference time-series for group 1 means
 
 for(y in 2:nyears){
 mu.logtheta1[g,y] ~ dnorm(mu.logtheta1[g,(y-1)],tau.mu1.y[g])
@@ -124,7 +125,8 @@ mu.logtheta1[g,y] ~ dnorm(mu.logtheta1[g,(y-1)],tau.mu1.y[g])
 
 m.logtheta2[m,1] <- 0
 
-tau.mu2.y[m] ~ dgamma(0.001,0.001) # precision of hte first-difference time-series for group 2 means
+sigma.mu2.y[m] ~ dunif(0, 1)      # weakly-informative prior on sd of yearly log-index differences for group 2
+tau.mu2.y[m] <- 1 / pow(sigma.mu2.y[m], 2) # precision of hte first-difference time-series for group 2 means
 for(y in 2:nyears){
 
 m.logtheta2[m,y] ~ dnorm(m.logtheta2[m,y-1],tau.mu2.y[m])# 
@@ -159,7 +161,8 @@ expmu2[g,m,y] <-exp(mu.logtheta2[g,m,y]) #exponentiated average of the log-indic
 for(y in 1:nyears){
 for(g in 1:ngroups1){
 
-   prec.logtheta[g,y] ~ dgamma(0.001,0.001) #prior for the precision of the logtransformed indices
+   sigma.logtheta[g,y] ~ dunif(0, 2)   # weakly-informative prior on sd of species log-indices within group/year
+   prec.logtheta[g,y] <- 1 / pow(sigma.logtheta[g,y], 2) #prior for the precision of the logtransformed indices
    tau[g,y] <- 1 / pow(prec.logtheta[g,y], 0.5) # SE around logtheta
 }#g
 }#y
