@@ -2319,6 +2319,18 @@ sp_sub <- spyr[year %in% c(base.yr, end.yr), .(species, year, draw, sp_AFV = ann
 contribution_draws <- merge(sp_sub, cont_totals, by = c("year", "draw"))
 contribution_draws[, pct_contrib := sp_AFV / total_AFV*100]
 
+# contribution of specialized and generalized nectarivores to ttl AFV in 1970 and 2017
+contribution_draws_spcl <- merge(contribution_draws, splist3[, c("species", "specialization_lvl")], by = "species", all.x = TRUE)
+
+contrib_spcl <- contribution_draws_spcl[, .(
+  pct_contrib_spcl = sum(pct_contrib, na.rm = TRUE)
+), by = .(draw, year, specialization_lvl)]
+
+contrib_summ_spcl <- contrib_spcl[, {
+  pct <- summarize_draws(pct_contrib_spcl)
+  pct
+}, by = .(year, specialization_lvl)]
+
 # each species' contribution to total AFV in 1970 and 2017
 contrib_summ <- contribution_draws[, {
   pct <- summarize_draws(pct_contrib)
