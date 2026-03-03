@@ -1,18 +1,18 @@
-species,Family,Order,mass_mean,FMR_pred_a,FMR_pred_b,mean log x,c,d,e,Service_days,FN_mean,FN_min,FN_max,NV_mean,NV_mean_ln,NV_sd_ln,FNE_mean,FNE_min,FNE_max,NC_mean,NC_mean_ln,NC_sd_ln,specialization_lvl,Habitat
-White-winged Dove,Columbidae,Columbiformes,153,6.35,0.671,2.089,0.33,1.067,0.067,91,0.3,0.075,0.525,543,6.258427732,0.278142365,0.845,0.7,0.99,0.24,-1.427116356,0.04765509,generalized,Shrubland
-Verdin,Remizidae,Passeriformes,6.8,6.35,0.671,2.089,0.33,1.067,0.067,365,0.073,0.0657,0.0803,20.7,2.991840781,0.276741464,0.845,0.7,0.99,0.233883556,-1.453655343,0.038037651,generalized,Shrubland
-Cactus Wren,Troglodytidae,Passeriformes,38.9,6.35,0.671,2.089,0.33,1.067,0.067,365,0.17,0.0425,0.2975,543,6.258427732,0.278142365,0.845,0.7,0.99,0.24,-1.427116356,0.04765509,generalized,Shrubland
-Ruby-throated Hummingbird,Trochilidae,Caprimulgiformes,3.09,5.61,1.21,0.742,0.102,1.2,10.52,56,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Woodland
-Black-chinned Hummingbird,Trochilidae,Caprimulgiformes,3.39,5.61,1.21,0.742,0.102,1.2,10.52,56,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Forest
-Anna's Hummingbird,Trochilidae,Caprimulgiformes,4.24,5.61,1.21,0.742,0.102,1.2,10.52,105,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Woodland
-Costa's Hummingbird,Trochilidae,Caprimulgiformes,3.09,5.61,1.21,0.742,0.102,1.2,10.52,119,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Shrubland
-Broad-tailed Hummingbird,Trochilidae,Caprimulgiformes,3.54,5.61,1.21,0.742,0.102,1.2,10.52,70,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Forest
-Rufous Hummingbird,Trochilidae,Caprimulgiformes,3.5,5.61,1.21,0.742,0.102,1.2,10.52,21,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Forest
-Allen's Hummingbird,Trochilidae,Caprimulgiformes,3.36,5.61,1.21,0.742,0.102,1.2,10.52,91,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Shrubland
-Calliope Hummingbird,Trochilidae,Caprimulgiformes,2.64,5.61,1.21,0.742,0.102,1.2,10.52,28,0.875,0.85,0.9,23.7,3.154687666,0.146883508,0.845,0.7,0.99,0.24645312,-1.401450789,0.041648599,specialized,Shrubland
-Acorn Woodpecker,Picidae,Piciformes,79.62,15.9,0.543,1.203,0.183,1.063,0.718,365,0.015,0.00375,0.02625,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Woodland
-Orchard Oriole,Icteridae,Passeriformes,19.44,10.4,0.68,1.268,0.225,1.025,0.375,35,0.099,0.02475,0.17325,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Forest
-Hooded Oriole,Icteridae,Passeriformes,24.3,10.4,0.68,1.268,0.225,1.025,0.375,112,0.099,0.02475,0.17325,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Woodland
-Bullock's Oriole,Icteridae,Passeriformes,37.9,10.4,0.68,1.268,0.225,1.025,0.375,35,0.099,0.02475,0.17325,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Forest
-Baltimore Oriole,Icteridae,Passeriformes,32.83,10.4,0.68,1.268,0.225,1.025,0.375,70,0.07,0.0175,0.1225,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Forest
-Scott's Oriole,Icteridae,Passeriformes,36.48,10.4,0.68,1.268,0.225,1.025,0.375,42,0.099,0.02475,0.17325,64.92689646,4.14702482,0.229072683,0.845,0.7,0.99,0.102470928,-2.283725377,0.105349209,generalized,Shrubland
+species,Family,Order,specialization_lvl,Habitat,mass_mean,FMR_pred_a,FMR_pred_b,mean log x,c,d,e,Service_days,FN_mean,FN_min,FN_max,NV_mean_ln,NV_sd_ln,FNE_mean,FNE_min,FNE_max,NC_mean_ln,NC_sd_ln
+White-winged Dove,Columbidae,Columbiformes,generalized,Shrubland,153,6.35,0.671,2.089,0.33,1.067,0.067,91,0.3,0.075,0.525,6.258427732,0.278142365,0.845,0.7,0.99,-1.427116356,0.04765509
+Verdin,Remizidae,Passeriformes,generalized,Shrubland,6.8,6.35,0.671,2.089,0.33,1.067,0.067,365,0.073,0.0657,0.0803,2.991840781,0.276741464,0.845,0.7,0.99,-1.453655343,0.038037651
+Cactus Wren,Troglodytidae,Passeriformes,generalized,Shrubland,38.9,6.35,0.671,2.089,0.33,1.067,0.067,365,0.17,0.0425,0.2975,6.258427732,0.278142365,0.845,0.7,0.99,-1.427116356,0.04765509
+Ruby-throated Hummingbird,Trochilidae,Caprimulgiformes,specialized,Woodland,3.09,5.61,1.21,0.742,0.102,1.2,10.52,56,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Black-chinned Hummingbird,Trochilidae,Caprimulgiformes,specialized,Forest,3.39,5.61,1.21,0.742,0.102,1.2,10.52,56,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Anna's Hummingbird,Trochilidae,Caprimulgiformes,specialized,Woodland,4.24,5.61,1.21,0.742,0.102,1.2,10.52,105,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Costa's Hummingbird,Trochilidae,Caprimulgiformes,specialized,Shrubland,3.09,5.61,1.21,0.742,0.102,1.2,10.52,119,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Broad-tailed Hummingbird,Trochilidae,Caprimulgiformes,specialized,Forest,3.54,5.61,1.21,0.742,0.102,1.2,10.52,70,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Rufous Hummingbird,Trochilidae,Caprimulgiformes,specialized,Forest,3.5,5.61,1.21,0.742,0.102,1.2,10.52,21,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Allen's Hummingbird,Trochilidae,Caprimulgiformes,specialized,Shrubland,3.36,5.61,1.21,0.742,0.102,1.2,10.52,91,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Calliope Hummingbird,Trochilidae,Caprimulgiformes,specialized,Shrubland,2.64,5.61,1.21,0.742,0.102,1.2,10.52,28,0.875,0.85,0.9,3.154687666,0.146883508,0.845,0.7,0.99,-1.401450789,0.041648599
+Acorn Woodpecker,Picidae,Piciformes,generalized,Woodland,79.62,15.9,0.543,1.203,0.183,1.063,0.718,365,0.015,0.00375,0.02625,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209
+Orchard Oriole,Icteridae,Passeriformes,generalized,Forest,19.44,10.4,0.68,1.268,0.225,1.025,0.375,35,0.099,0.02475,0.17325,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209
+Hooded Oriole,Icteridae,Passeriformes,generalized,Woodland,24.3,10.4,0.68,1.268,0.225,1.025,0.375,112,0.099,0.02475,0.17325,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209
+Bullock's Oriole,Icteridae,Passeriformes,generalized,Forest,37.9,10.4,0.68,1.268,0.225,1.025,0.375,35,0.099,0.02475,0.17325,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209
+Baltimore Oriole,Icteridae,Passeriformes,generalized,Forest,32.83,10.4,0.68,1.268,0.225,1.025,0.375,70,0.07,0.0175,0.1225,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209
+Scott's Oriole,Icteridae,Passeriformes,generalized,Shrubland,36.48,10.4,0.68,1.268,0.225,1.025,0.375,42,0.099,0.02475,0.17325,4.14702482,0.229072683,0.845,0.7,0.99,-2.283725377,0.105349209

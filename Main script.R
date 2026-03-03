@@ -633,7 +633,7 @@ jagsMod = jags(data = data.jags,
 
 #save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))

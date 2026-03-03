@@ -19,8 +19,8 @@ for (i in seq_len(nrow(pol_param))) {
   FNE <- rep(r$FNE_mean, N_FVR_DRAWS)
 
   # no variance in NC and NV
-  NV <- rep(r$NV_mean, N_FVR_DRAWS)
-  NC <- rep(r$NC_mean, N_FVR_DRAWS)
+  NV <- rep(exp(r$NV_mean_ln), N_FVR_DRAWS)
+  NC <- rep(exp(r$NC_mean_ln), N_FVR_DRAWS)
   
   EperF <- NV * ul2ml * EC_sucorse * FNE * NC # energy provided by each flower in kJ/flower
   FVR   <- FMR * FN / EperF     # visits per day in flowers/day
