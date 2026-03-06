@@ -18,6 +18,14 @@ base.yr = 1970
 end.yr = 2017
 popsource = "Pop.source"
 
+fig_palette <- c("#D55E00", 
+                 "#56B4E9", 
+                 "#009E73", 
+                 "#E69F00", 
+                 "#0072B2", 
+                 "#CC79A7", 
+                 "#999999")
+
 set.seed(2019)
 
 pollinators = read.csv("input/avian nectarivore data for computing FVR.csv",
@@ -185,9 +193,6 @@ for(ss in sps){
 write.csv(indicesraw, "temp_output/post_GAM_indices_nectarivore.csv", row.names = FALSE)
 
 ######################### end GAM smoothing of annual indices
-
-
-#load("temp_output/post GAM indices.RDATA")
 
 
 indices = indicesraw
@@ -647,13 +652,6 @@ write.csv(sumq,paste0("temp_output/pollinator population change parameters NA lo
 #write.csv(sumqalt,paste0("population change parameters NA loss w neff.csv"))
 
 
-
-# faml = as.data.frame(sumq[paste0("Nlost.fam[",1:nfams,"]"),])
-# famp = as.data.frame(sumq[paste0("plost.fam[",1:nfams,"]"),])
-# names(famp) = paste0("plost.fam.",names(famp))
-# faml = cbind(faml,famp)
-# faml = cbind(faml,fams)
-
 ordl = as.data.frame(sumq[paste0("Nlost.ord[",1:nords,"]"),])
 ordp = as.data.frame(sumq[paste0("plost.ord[",1:nords,"]"),])
 names(ordp) = paste0("plost.ord.",names(ordp))
@@ -672,36 +670,6 @@ names(hbp) = paste0("plost.hb.",names(hbp))
 hbl = cbind(hbl,hbp)
 hbl = cbind(hbl,hbs)
 
-# nativel = as.data.frame(sumq[paste0("Nlost.native[",1:nnatives,"]"),])
-# nativep = as.data.frame(sumq[paste0("plost.native[",1:nnatives,"]"),])
-# names(nativep) = paste0("plost.native.",names(nativep))
-# nativel = cbind(nativel,nativep)
-# nativel = cbind(nativel,natives)
-
-
-# migratel = as.data.frame(sumq[paste0("Nlost.migrate[",1:nmigrates,"]"),])
-# migratep = as.data.frame(sumq[paste0("plost.migrate[",1:nmigrates,"]"),])
-# names(migratep) = paste0("plost.migrate.",names(migratep))
-# migratel = cbind(migratel,migratep)
-# migratel = cbind(migratel,migrates)
-
-
-# ail = as.data.frame(sumq[paste0("Nlost.ai[",1:nais,"]"),])
-# aip = as.data.frame(sumq[paste0("plost.ai[",1:nais,"]"),])
-# names(aip) = paste0("plost.ai.",names(aip))
-# ail = cbind(ail,aip)
-# ail = cbind(ail,ais)
-# 
-# 
-# 
-# birdgroupl = as.data.frame(sumq[paste0("Nlost.birdgroup[",1:nbirdgroups,"]"),])
-# birdgroupp = as.data.frame(sumq[paste0("plost.birdgroup[",1:nbirdgroups,"]"),])
-# names(birdgroupp) = paste0("plost.birdgroup.",names(birdgroupp))
-# birdgroupl = cbind(birdgroupl,birdgroupp)
-# birdgroupl = cbind(birdgroupl,birdgroups)
-
-
-
 biomes = unique(splist[,c("g2","Breeding.Biome")])
 biomes = biomes[order(biomes$g2),]
 biomel = as.data.frame(sumq[paste0("Nlost.biome[",1:ngroups2,"]"),])
@@ -709,15 +677,6 @@ biomep = as.data.frame(sumq[paste0("plost.biome[",1:ngroups2,"]"),])
 names(biomep) = paste0("plost.biome.",names(biomep))
 biomel = cbind(biomel,biomep)
 biomel = cbind(biomel,biomes)
-
-
-# winters = unique(splist[,c("g1","Winter.Biome")])
-# winters = winters[order(winters$g1),]
-# winterl = as.data.frame(sumq[paste0("Nlost.winter[",1:ngroups1,"]"),])
-# winterp = as.data.frame(sumq[paste0("plost.winter[",1:ngroups1,"]"),])
-# names(winterp) = paste0("plost.winter.",names(winterp))
-# winterl = cbind(winterl,winterp)
-# winterl = cbind(winterl,winters)
 
 
 
@@ -728,40 +687,21 @@ alll = cbind(alll,allp)
 alll = alll[1,]
 alll[,c(19:21)] <- NA
 biomel[,21] <- NA
-#winterl[,21] <- NA
 names(alll)[20] = "Group"
 alll$nspecies = nspecies
-#nativel$nspecies = nsppnatives
-#migratel$nspecies = nsppmigrates
-#birdgroupl$nspecies = nsppbirdgroups
-#ail$nspecies = nsppais
 biomel$nspecies = nsppbiomes
-#winterl$nspecies = nsppwinters
-#faml$nspecies = nsppfams
 ordl$nspecies = nsppords
 spcll$nspecies = nsppspcls
 hbl$nspecies = nspphbs
 nms = names(alll)
 
-# names(nativel) = nms
-# names(migratel) = nms
-# names(birdgroupl) = nms
-# names(ail) = nms
 names(biomel) = nms
-# names(winterl) = nms
-# names(faml) = nms
 names(ordl) = nms
 names(spcll) = nms
 names(hbl) = nms
 
 allsums = rbind(alll,
-                # nativel,
-                # migratel,
-                # birdgroupl,
-                # ail,
                 biomel,
-                # winterl,
-                # faml,
                 ordl,
                 spcll, 
                 hbl, stringsAsFactors = FALSE)
@@ -796,24 +736,44 @@ biomepop$year = biomepop$yrs + (base.yr-1)
 biomepop = biomepop[order(biomepop$Breeding.Biome,biomepop$year),]
 biomlab = biomepop[which(biomepop$year == 2017),]
 
+biomlab$label_x <- NA
+biomlab$label_y <- NA
+
+biomlab$label_x[biomlab$Breeding.Biome == "Eastern Forest"] <- 2015
+biomlab$label_y[biomlab$Breeding.Biome == "Eastern Forest"] <- 7
+
+biomlab$label_x[biomlab$Breeding.Biome == "Aridlands"] <- 2015
+biomlab$label_y[biomlab$Breeding.Biome == "Aridlands"] <- -9
+
+biomlab$label_x[biomlab$Breeding.Biome == "Western Forest"] <- 2015
+biomlab$label_y[biomlab$Breeding.Biome == "Western Forest"] <- -43
+
 pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Breeding.Biome,fill = Breeding.Biome),alpha = 0.2)+
   geom_line(aes(colour = Breeding.Biome))+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-  geom_label_repel(data = biomlab,aes(label = Breeding.Biome,colour = Breeding.Biome),xlim = c(2017,2030), size = 6)+
-  labs(x = "Year",y = "Change in no. of avian pollinators in North America (Millions)")+
-  scale_x_continuous(limits = c(1970, 2025), expand = expansion(mult = c(0, 0.08))) +
+  geom_label(
+    data = biomlab, 
+    aes(x = label_x, y = label_y, label = Breeding.Biome, colour = Breeding.Biome),
+    fill = "white",
+    label.size = NA, 
+    hjust = 1,          
+    size = 7,
+    inherit.aes = FALSE 
+  ) +
+  labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_viridis_d(option = "viridis") + 
-  scale_color_viridis_d(option = "viridis") +
+  scale_fill_manual(values = fig_palette) + 
+  scale_color_manual(values = fig_palette)+
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
+        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+        axis.title = element_text(size = 22),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -825,200 +785,6 @@ png("output/Breeding biome level avian pollinator population change trajectory l
 print(pmain)
 dev.off()
 
-# pdf(paste0("output/1-Breeding biome avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6),fill = grey(0.5),alpha = 0.2)+
-#     geom_line(aes(colour = Breeding.Biome))+
-#     facet_wrap_paginate(~Breeding.Biome,ncol = 2,nrow = 2,scales = "free",page = jj)+
-#     theme(legend.position = "none")
-#   print(pmain)
-# }
-# dev.off()
-
-# write.csv(biomepop[,c("Breeding.Biome",
-#                       "year",
-#                       "med",
-#                       "lci",
-#                       "uci"
-#                       )],"output/1-Breeding Biome level avian pollinator population change trajectories.csv")
-# 
-
-
-
-#### wintering summaries
-
-# winterpop = expand.grid(winter = 1:ngroups2,
-#                         yrs = 1:nyears)
-# winterpop$param = paste0("Nalost.winter[",winterpop$winter,",",winterpop$yrs,"]")
-# 
-# winterpopt = as.data.frame(sumq[winterpop$param,])
-# winterpop = cbind(winterpop,winterpopt)
-# winterpop = merge(winterpop,winters,by.x = "winter",by.y = "g1")
-# winterpop$year = winterpop$yrs + (base.yr-1)
-# winterpop = winterpop[order(winterpop$Winter.Biome,winterpop$year),]
-# winterlab = winterpop[which(winterpop$year == 2017),]
-# 
-# pmain = ggplot(data = winterpop,aes(x = year,y = med/1e6))+
-#   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Winter.Biome,fill = Winter.Biome),alpha = 0.2)+
-#   geom_line(aes(colour = Winter.Biome))+
-#   geom_label_repel(data = winterlab,aes(label = Winter.Biome,colour = Winter.Biome),xlim = c(2017,2040), size = 6)+
-#   labs(x = "",y = "Change in number of avian pollinators in North America (Millions)")+
-#   xlim(1970,2030)+
-#   theme_minimal()+
-#   theme_bw() +
-#   theme(legend.position = "none", panel.grid.major = element_blank(),
-#         panel.grid.minor = element_blank(), 
-#         axis.text.x = element_text(size=15),
-#         axis.text.y = element_text(size=15),
-#         axis.title.y = element_text(size = 16))
-# 
-# 
-# pdf(paste0("output/2-Wintering biome avian pollinator population change trajectory loss.pdf"))
-# print(pmain)
-# dev.off()
-# png("output/2-Wintering biome avian pollinator population change trajectory loss.png", width = 4000, height = 2500, res = 300)
-# print(pmain)
-# dev.off()
-# 
-# pdf(paste0("output/2-Wintering Biome avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = winterpop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6),fill = grey(0.5),alpha = 0.2)+
-#     geom_line(aes(colour = Winter.Biome))+
-#     facet_wrap_paginate(~Winter.Biome,ncol = 2,nrow = 2,scales = "free",page = jj)+
-#     theme(legend.position = "none")
-#   print(pmain)
-# }
-# dev.off()
-# 
-# write.csv(winterpop[,c("Winter.Biome",
-#                        "year",
-#                        "med",
-#                        "lci",
-#                        "uci")],"Wintering biome avian pollinator population change trajectories.csv")
-# 
-
-#### fam summaries
-
-# fampop = expand.grid(fam = 1:nfams,
-#                      yrs = 1:nyears)
-# fampop$param = paste0("Nalost.fam[",fampop$fam,",",fampop$yrs,"]")
-# 
-# fampopt = as.data.frame(sumq[fampop$param,])
-# fampop = cbind(fampop,fampopt)
-# fampop = merge(fampop,fams,by.x = "fam",by.y = "famfactn")
-# fampop$year = fampop$yrs + (base.yr-1)
-# famlab = fampop[which(fampop$year == 2017),]
-# 
-# pmain = ggplot(data = fampop,aes(x = year,y = med/1e6))+
-#   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,fill = Family),alpha = 0.2)+
-#   geom_line(aes(colour = Family))+
-#   labs(x = "",y = "Change in number of avian pollinators in North America (Millions)")+
-#   geom_label_repel(data = famlab,aes(label = Family,colour = Family), xlim=c(2017,2030), size = 6)+
-#   theme_minimal()+
-#   xlim(1970,2025)+
-#   theme_bw() +
-#   theme(legend.position = "none", panel.grid.major = element_blank(),
-#         panel.grid.minor = element_blank(), 
-#         axis.text.x = element_text(size=15),
-#         axis.text.y = element_text(size=15),
-#         axis.title.y = element_text(size = 16)) +
-#   scale_y_continuous( breaks = seq(-30, 0, by = 10))
-# 
-# pdf(paste0("output/3-Family avian pollinator population change trajectory loss.pdf"),
-#     width = 14,
-#     height = 10)
-# print(pmain)
-# dev.off()
-# png("output/3-Family avian pollinator population change trajectory loss.png", width = 4000, height = 2500, res = 300)
-# print(pmain)
-# dev.off()
-# 
-# pdf(paste0("output/3-Family avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = fampop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,fill = Family),alpha = 0.2)+
-#     geom_line(aes(colour = Family))+
-#     theme(legend.position = "none")+
-#     facet_wrap_paginate(~Family,ncol = 3,nrow = 3,scales = "free",page = jj)
-#   print(pmain)
-# }
-# dev.off()
-# 
-# write.csv(fampop[,c("Family",
-#                        "year",
-#                        "med",
-#                        "lci",
-#                        "uci")],"Family avian pollinator population change trajectories.csv")
-
-#### ord summaries
-
-ordpop = expand.grid(ord = 1:nords,
-                     yrs = 1:nyears)
-ordpop$param = paste0("Nalost.ord[",ordpop$ord,",",ordpop$yrs,"]")
-
-ordpopt = as.data.frame(sumq[ordpop$param,])
-ordpop = cbind(ordpop,ordpopt)
-ordpop = merge(ordpop,ords,by.x = "ord",by.y = "ordfactn")
-ordpop$year = ordpop$yrs + (base.yr-1)
-ordpop = ordpop[order(ordpop$Order,ordpop$year),]
-ordlab = ordpop[which(ordpop$year == 2017),]
-
-pmain = ggplot(data = ordpop,aes(x = year,y = med/1e6))+
-  geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Order,fill = Order),alpha = 0.2)+
-  geom_line(aes(colour = Order))+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-  geom_label_repel(data = ordlab,aes(label = Order,colour = Order),xlim = c(2017,2032), size = 6)+
-  labs(x = "Year",y = "Change in no. of avian pollinators in North America (Millions)")+
-  scale_x_continuous(limits = c(1970, 2025), breaks = seq(1970, 2020, by=10), expand = expansion(mult = c(0, 0.1))) +
-  scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_viridis_d(option = "viridis") + 
-  scale_color_viridis_d(option = "viridis") +
-  theme_minimal()+
-  theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
-        panel.grid.minor = element_blank(), 
-        axis.line.x = element_line(color = "black", linewidth = 0.6),
-        axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-  )
-
-pdf(paste0("output/Order level avian pollinator population change trajectory loss.pdf"), width = 10, height = 7)
-print(pmain)
-dev.off()
-png("output/Order level avian pollinator population change trajectory loss.png", width = 3000, height = 2500, res = 300)
-print(pmain)
-dev.off()
-
-# pdf(paste0("output/4-Order avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = ordpop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,fill = Order),alpha = 0.2)+
-#     geom_line(aes(colour = Order))+
-#     theme_minimal()+
-#     theme(legend.position = "none")+
-#     facet_wrap_paginate(~Order,ncol = 2,nrow = 2,scales = "free",page = jj)
-#   print(pmain)
-# }
-# dev.off()
-
-# write.csv(ordpop[,c("Order",
-#                     "year",
-#                     "med",
-#                     "lci",
-#                     "uci")],"output/2-Order level avian pollinator population change trajectories.csv")
 
 
 #### specialization level summaries
@@ -1034,24 +800,37 @@ spclpop$year = spclpop$yrs + (base.yr-1)
 spclpop = spclpop[order(spclpop$specialization_lvl,spclpop$year),]
 spcllab = spclpop[which(spclpop$year == 2017),]
 
+spcllab$label_x <- NA
+spcllab$label_y <- NA
+
+spcllab$label_x[spcllab$specialization_lvl == "specialized"] <- 2010
+spcllab$label_y[spcllab$specialization_lvl == "specialized"] <- -10
+
+spcllab$label_x[spcllab$specialization_lvl == "generalized"] <- 2010
+spcllab$label_y[spcllab$specialization_lvl == "generalized"] <- -22
+
 pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = specialization_lvl,fill = specialization_lvl),alpha = 0.2)+
   geom_line(aes(colour = specialization_lvl))+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-  geom_label_repel(data = spcllab,aes(label = specialization_lvl,colour = specialization_lvl),xlim = c(2017,2030), size = 6)+
-  labs(x = "Year",y = "Change in no. of avian pollinators in North America (Millions)")+
-  scale_x_continuous(limits = c(1970, 2025), expand = expansion(mult = c(0, 0.08))) +
+  geom_label(data = spcllab, aes(x = label_x, y = label_y, label = specialization_lvl, colour = specialization_lvl),
+             fill = "white",
+             label.size = NA,  
+             hjust = 1,        
+             size = 7) +
+  labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_viridis_d(option = "viridis") + 
-  scale_color_viridis_d(option = "viridis") +
+  scale_fill_manual(values = fig_palette) + 
+  scale_color_manual(values = fig_palette)+
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
+        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+        axis.title = element_text(size = 22),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1063,26 +842,6 @@ png("output/specialization_lvl level avian pollinator population change trajecto
 print(pmain)
 dev.off()
 
-# pdf(paste0("output/7-Specialist and Generalist avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,fill = specialization_lvl),alpha = 0.2)+
-#     geom_line(aes(colour = specialization_lvl))+
-#     theme_minimal()+
-#     theme(legend.position = "none")+
-#     facet_wrap_paginate(~specialization_lvl,ncol = 2,nrow = 2,scales = "free",page = jj)
-#   print(pmain)
-# }
-# dev.off()
-
-# write.csv(spclpop[,c("specialization_lvl",
-#                     "year",
-#                     "med",
-#                     "lci",
-#                     "uci")],"output/3-Specialized and Generalized avian pollinator population change trajectories.csv")
-# 
 
 #### habitat summaries
 
@@ -1097,24 +856,40 @@ hbpop$year = hbpop$yrs + (base.yr-1)
 hbpop = hbpop[order(hbpop$Habitat,hbpop$year),]
 hblab = hbpop[which(hbpop$year == 2017),]
 
+biomlab$label_x <- NA
+biomlab$label_y <- NA
+
+hblab$label_x[hblab$Habitat == "Forest"] <- 2010
+hblab$label_y[hblab$Habitat == "Forest"] <- -53
+
+hblab$label_x[hblab$Habitat == "Shrubland"] <- 2010
+hblab$label_y[hblab$Habitat == "Shrubland"] <- -17
+
+hblab$label_x[hblab$Habitat == "Woodland"] <- 2010
+hblab$label_y[hblab$Habitat == "Woodland"] <- 25
+
 pmain = ggplot(data = hbpop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Habitat,fill = Habitat),alpha = 0.2)+
   geom_line(aes(colour = Habitat))+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-  geom_label_repel(data = hblab,aes(label = Habitat,colour = Habitat),xlim = c(2017,2030), size = 6)+
-  labs(x = "Year",y = "Change in no. of avian pollinators in North America (Millions)")+
-  scale_x_continuous(limits = c(1970, 2025), expand = expansion(mult = c(0, 0.08))) +
+  geom_label(data = hblab, aes(x = label_x, y = label_y, label = Habitat, colour = Habitat),
+             fill = "white",
+             label.size = NA,  
+             hjust = 1,        
+             size = 7) +
+  labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_viridis_d(option = "viridis") + 
-  scale_color_viridis_d(option = "viridis") +
+  scale_fill_manual(values = fig_palette) + 
+  scale_color_manual(values = fig_palette)+
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
+        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+        axis.title = element_text(size = 22),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1126,26 +901,6 @@ png("output/Habitat level avian pollinator population change trajectory loss.png
 print(pmain)
 dev.off()
 
-# pdf(paste0("output/8-Habitat avian pollinator population change trajectory facet loss.pdf"))
-# 
-# for(jj in 1:ceiling(ngroups2/4)){
-#   pmain = ggplot(data = hbpop,aes(x = year,y = med/1e6))+
-#     labs(x = "",y = "Change in number of avian pollinators (Millions)")+
-#     geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,fill = Habitat),alpha = 0.2)+
-#     geom_line(aes(colour = Habitat))+
-#     theme_minimal()+
-#     theme(legend.position = "none")+
-#     facet_wrap_paginate(~Habitat,ncol = 2,nrow = 2,scales = "free",page = jj)
-#   print(pmain)
-# }
-# dev.off()
-
-# write.csv(hbpop[,c("Habitat",
-#                      "year",
-#                      "med",
-#                      "lci",
-#                      "uci")],"output/4-Habitat level avian pollinator population change trajectories.csv")
-# 
 
 #### overall summaries
 
@@ -1171,13 +926,6 @@ for(i in 1:ncol(lost.s)){
 
 lost.s = cbind(splist,lost.s)
 
-
-# Psi = as.data.frame(sumq[paste0("Psi[",1:nspecies,"]"),c("med","lci","uci")])
-# names(Psi) = paste0("Psi_",names(Psi))
-# lost.s = cbind(lost.s,Psi)
-# NEst = as.data.frame(sumq[paste0("NEst[",1:nspecies,"]"),c("med","lci","uci")])
-# names(NEst) = paste0("NEst_",names(NEst))
-# lost.s = cbind(lost.s,NEst)
 
 # June 2021 - adding species level proportional loss ----------------------
 
@@ -1284,52 +1032,7 @@ for(j in c("N_med","N_lci","N_uci")){
 }
 
 splabs = sppop2[which(sppop2$year == max(sppop2$year)),]
-# 
-# pmain = ggplot(data = totp,aes(x = year,y = N_med))+
-#   geom_ribbon(aes(x = year,ymin = N_lci,ymax = N_uci),fill = grey(0.5),alpha = 0.2)+
-#   geom_line()+
-#   labs(x = "",y = "Number of avian pollinators in North America (Millions)")+
-#   xlim(1970,2020)+
-#   annotate(geom = "text", x = 1990,y = lostpy/1e9,label = lostp)+
-#   theme_minimal()+
-#   theme_bw() +
-#   theme(legend.position = "none", panel.grid.major = element_blank(),
-#         panel.grid.minor = element_blank(),
-#         axis.text.x = element_text(size=10),
-#         axis.text.y = element_text(size=10),
-#         axis.title.y = element_text(size = 12))
-# 
-# pdf(paste0("output/5-total avian pollinator population change trajectory.pdf"))
-# print(pmain)
-# dev.off()
-# png("output/5-total avian pollinator population change trajectory.png", width = 2400, height = 1600, res = 300)
-# print(pmain)
-# dev.off()
-# 
-# 
-## Population change trajectory of each species
-# for(j in c("Loss_med","Loss_lci","Loss_uci")){
-#   lossa[,j] = (lossa[,j]/1e6)
-# }
-# 
-# pmain = ggplot(data = lossa,aes(x = year,y = Loss_med))+
-#   geom_ribbon(aes(x = year,ymin = Loss_lci,ymax = Loss_uci),fill = grey(0.5),alpha = 0.2)+
-#   geom_line()+
-#   labs(x = "",y = "Change in number of avian pollinators in North America (Millions)")+
-#   annotate(geom = "text", x = 2000,y = -1,label = lostp)+
-#   theme(
-#     axis.title.y = element_text(size = 2),
-#   )+
-#   theme_minimal()+
-#   theme(legend.position = "none")
-# 
-# pdf(paste0("output/6-Avian pollinator overall loss trajectory-million.pdf"))
-# print(pmain)
-# dev.off()
-# png("output/6-Avian pollinator overall loss trajectory-million.png", width = 2400, height = 1600, res = 300)
-# print(pmain)
-# dev.off()
-# 
+
 # # rescaling raw index and smoothed index to ahundance and adding raw ahundance points to fitted line
 lost.st = lost.s[rev(order(lost.s$Loss_med)),] #sorting species from largest decrease to largest increase
 spord = unique(lost.st$species)
@@ -1352,43 +1055,23 @@ spinlabs[decs,"labs"] = paste0(signif(-1*(spinlabs[decs,"Loss_med"])/1e6,2),"M "
 spinlabs[gns,"labs"] = paste0("+",signif(-1*(spinlabs[gns,"Loss_med"])/1e6,2),"M "," [",signif(-1*(spinlabs[gns,"Loss_uci"])/1e6,2)," : ",signif(-1*(spinlabs[gns,"Loss_lci"])/1e6,2),"]")
 
 rwsnodat = which(is.na(sppop2$rescindex))
-# 
-# write.csv(sppop2,"temp_output/Avian pollinator modeled trajectories w projections.csv")
-# 
-# sppop2[rwsnodat,c("lci","uci","lqrt","uqrt","med")] = NA
-# 
-# write.csv(sppop2,"temp_output/Avian pollinator modeled trajectories.csv")
-# 
-# pdf(paste0("output/Individual avian pollinator populations manypage.pdf"))
-# for(jj in 1:ceiling(nspecies/9)){
-#   pmain = ggplot(data = sppop2,aes(x = year,y = med))+
-#     geom_ribbon(data = sppop2,aes(x = year,ymin = lci,ymax = uci),alpha = 0.2)+
-#     geom_ribbon(data = sppop2,aes(x = year,ymin = lqrt,ymax = uqrt),alpha = 0.2)+
-#     geom_line(data = sppop2,aes(x = year,y = med))+
-#     geom_line(data = sppop2,aes(x = year,y = rescindex,colour = Breeding.Biome))+
-#     geom_point(data = sppop2,aes(x = year,y = rescindex.raw,colour = Breeding.Biome),size = 0.9)+
-#     geom_text(data = spinlabs,aes(x = year,y = uci,label = labs),nudge_x = 20,size = 2)+
-#     geom_text(data = spinlabs,aes(x = year,y = lci,label = Breeding.Biome,colour = Breeding.Biome),nudge_x = 20,size = 2)+
-#     labs(x = "",y = "Millions of birds in North American population")+
-#     theme_minimal()+
-#     theme(legend.position = "none")+
-#     facet_wrap_paginate(~spsort,ncol = 3,nrow = 3,scales = "free_y",page = jj)
-#   print(pmain)
-# }
-# dev.off()
-# 
+
 pdf(paste0("output/Predicted change in avian pollinator populations by species.pdf"))
 for(jj in 1:ceiling(nspecies/9)){
   pmain = ggplot(data = sppop2,aes(x = year,y = med))+
     geom_ribbon(data = sppop2,aes(x = year,ymin = lci,ymax = uci, fill = Breeding.Biome),alpha = 0.2)+
     geom_line(data = sppop2,aes(x = year,y = med))+
-    scale_fill_viridis_d(option = "viridis") +
-    #geom_line(data = sppop2,aes(x = year,y = rescindex),colour = "red")+
-    labs(x = "",y = "No. of avian pollinators in North America (Millions)")+
+    scale_fill_manual(values = fig_palette) +
+    labs(x = "",y = "No. of avian nectarivores (Millions)")+
     theme_minimal()+
     geom_text(data = spinlabs,aes(x = 1990,y = Inf,label = labs),vjust = 2,size = 5, inherit.aes = FALSE)+
     theme(legend.position = "none",
+          
+          panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
+          
+          axis.line.x = element_line(color = "black", linewidth = 0.6),
+          axis.line.y = element_line(color = "black", linewidth = 0.6),
           
           axis.title.y = element_text(size = 18, margin = margin(r = 10)), 
           
@@ -1412,161 +1095,7 @@ for(jj in 1:ceiling(nspecies/9)){
 }
 dev.off()
 
-
-# ## plot of the expmu values showing the group-level trajectories over time
-# groups1 = unique(splist[,c("g1","Winter.Biome")])
-# nspg1 = table(splist$g1)
-# groups1 = groups1[order(groups1$g1),]
-# groups1 = cbind(groups1,nspg1)
-# names(groups1)[4] = "nspecies"
-# 
-# expmu1gps = expand.grid(g1 = 1:ngroups1,
-#                         yr = 1:nyears)
-# expmu1gps$year = expmu1gps$yr + (base.yr-1)
-# expmu1gps$param = paste0("expmu1[",expmu1gps$g1,",",expmu1gps$yr,"]")
-# expmu1 = sumq[expmu1gps$param,]
-# expmu1 = cbind(expmu1,expmu1gps)
-# expmu1 = merge(expmu1,groups1,
-#                by = c("g1"))
-# expmu1 = expmu1[order(expmu1$g1,expmu1$year),]
-# 
-# pdf("output/Wintering Biome avian pollinator group trajectories.pdf")
-# pe1 = ggplot(data = expmu1,
-#              aes(x = year,
-#                  y = med))+
-#   geom_line()+
-#   facet_wrap(~Winter.Biome,scales = "free_y")+
-#   geom_ribbon(aes(ymin = lci,
-#                   ymax = uci),
-#               alpha = 0.2)
-# 
-# print(pe1)
-# 
-# dev.off()
-# 
-# 
-# groups12 = unique(splist[,c("g1","g2","Winter.Biome","Breeding.Biome")])
-# nspg12 = data.frame(table(splist[,c("g1","g2")]))
-# groups12 = groups12[order(groups12$g1,groups12$g2),]
-# 
-# groups12 = merge(groups12,nspg12,by = c("g1","g2"))
-# names(groups12)[5] = "nspecies"
-# 
-# 
-# 
-# expmu2gps = expand.grid(g1 = 1:ngroups1,
-#                         g2 = 1:ngroups2,
-#                         yr = 1:nyears)
-# expmu2gps$param = paste0("expmu2[",expmu2gps$g1,",",expmu2gps$g2,",",expmu2gps$yr,"]")
-# 
-# expmu2gps$year = expmu2gps$yr + (base.yr-1)
-# 
-# expmu2 = sumq[expmu2gps$param,]
-# 
-# expmu2 = cbind(expmu2,expmu2gps)
-# 
-# expmu2 = merge(expmu2,groups12,
-#                by = c("g1","g2"))
-# 
-# expmu2 = expmu2[order(expmu2$g1,expmu2$g2,expmu2$year),]
-# expmu2$group = paste0(expmu2$Winter.Biome,"-",expmu2$Breeding.Biome)
-# 
-# 
-# 
-# pdf("output/Combined biome avian pollinator group trajectories.pdf")
-# 
-# for(jj in 1:ceiling(nrow(groups12)/9)){
-#   pe12 = ggplot(data = expmu2,
-#                 aes(x = year,
-#                     y = med))+
-#     geom_line()+
-#     facet_wrap_paginate(~group,scales = "free_y",ncol = 3,nrow = 3,page = jj)+
-#     geom_ribbon(aes(ymin = lci,
-#                     ymax = uci,fill = Winter.Biome),
-#                 alpha = 0.2)+
-#     theme(legend.position = "none")
-#   
-#   
-#   print(pe12)
-# }
-# 
-# dev.off()
-# 
-# 
-# 
-# 
-# ### plot the abundance trajectories for the subgroups
-# 
-# ########subgroup abundance trajectories
-# wsubgrp = grep(row.names(sumq),pattern = "Nsum.subgrp",fixed = T)
-# subgpout = as.data.frame(sumq[wsubgrp,])
-# subgpout$param = row.names(subgpout)
-# newcol = c("g1","g2","yr")
-# for(i in 1:nrow(subgpout)){
-#   wrb = (str_locate_all(subgpout[i,"param"],pattern = "\\[|\\,|\\]") )
-#   
-#   for(j in 1:3){
-#     cl = newcol[j]
-#     subgpout[i,cl] <- str_sub(subgpout[i,"param"],start = wrb[[1]][j,1]+1,
-#                               end = wrb[[1]][j+1,2]-1)
-#   }
-#   
-#   
-#   
-# }
-# 
-# subgpout = merge(subgpout,groups12,by = c("g1","g2"),all = T)
-# 
-# subgpout$year = as.integer(subgpout$yr) + 1969 
-# subgpout = subgpout[order(subgpout$g1,subgpout$g2,subgpout$year),]  
-# subgpout$group = paste0(subgpout$Winter.Biome," - ",subgpout$Breeding.Biome)
-# subgpout$splab = paste(subgpout$nspecies,"species")
-# gplabs = subgpout[which(subgpout$year == 1970),]
-# 
-# for(i in 1:nrow(gplabs)){
-#   g = gplabs[i,"group"]
-#   delta = subgpout[which(subgpout$year == 2017 & subgpout$group == g),"med"]-subgpout[which(subgpout$year == 1970 & subgpout$group == g),"med"]
-#   if(delta > 0){
-#     lb = paste0(signif(delta/1e6,2),"M gained")
-#   }else{
-#     lb = paste0(signif((-1*delta)/1e6,2),"M lost")
-#   }
-#   
-#   gplabs[i,"total_change"] = paste(lb,gplabs[i,"splab"])
-# }
-# 
-# 
-# for(cl in c("med","lci","uci")){
-#   subgpout[,cl] = subgpout[,cl]/1e6
-#   gplabs[,cl] = gplabs[,cl]/1e6
-# }
-# 
-# pdf("output/Combined biome avian pollinator group abundance trajectories.pdf")
-# 
-# for(jj in 1:ceiling(nrow(groups12)/9)){
-#   pe12 = ggplot(data = subgpout,
-#                 aes(x = year,
-#                     y = med))+
-#     geom_line(aes(colour = Breeding.Biome))+
-#     facet_wrap_paginate(~group,scales = "free_y",ncol = 3,nrow = 3,page = jj)+
-#     geom_ribbon(aes(ymin = lci,
-#                     ymax = uci,fill = Breeding.Biome),
-#                 alpha = 0.2)+
-#     geom_label(data = gplabs,aes(label = total_change,x = year,y = uci),nudge_x = 25, size = 2.5, colour = grey(0.4))+
-#     labs(x = "",y = "Millions of birds in North American population")+
-#     theme_minimal()+
-#     theme(legend.position = "none",
-#           strip.text = element_text(size = 6))
-#   
-#   
-#   print(pe12)
-# }
-# 
-# dev.off()
-
 write.csv(indices,"output/Avian pollinator original data.csv")
-
-#save.image("NA avifanual change.RData")
 
 #Above here is the part of species*year abundance estimation
 
@@ -1670,8 +1199,6 @@ for (i in seq_len(nrow(pol_param))) {
     FVR            = FVR,
     Service_days   = r$Service_days,            # days stayed in North America
     Breeding.Biome = r$Breeding.Biome,          # carried for grouping (if present)
-    # Winter.Biome   = r$Winter.Biome,
-    # Family         = r$Family,
     Order          = r$Order,
     specialization_lvl    = r$specialization_lvl,
     Habitat          = r$Habitat
@@ -1777,85 +1304,6 @@ Change_trajectory <- function(dt, value_col, by_cols) {
   summ
 }
 
-# # this function differs from Change_trajectory in using base-current instead of current-base, 
-# # so that a positive value indicates a loss, a negative value indicates a gain
-# Change_trajectory_inverse <- function(dt, value_col, by_cols) {
-#   base <- dt[year == base.yr, .(base_val = get(value_col)), by = c(by_cols, "draw")]
-#   # change = base - current
-#   x <- merge(dt, base, by = c(by_cols, "draw"))
-#   x[, rel_change := base_val - get(value_col)]
-#   # Summarize per group x year
-#   summ <- x[, as.list(summarize_draws(rel_change)), by = c(by_cols, "year")]
-#   setnames(summ, old = names(summ)[!(names(summ) %in% c(by_cols, "year"))],
-#            new = c("mean","sd","med","lci","uci","lqrt","uqrt"))
-#   summ
-# }
-
-# Species change trajectories
-#sps_chg_N <- Change_trajectory(spyr, value_col="N_draw", by_cols="species")
-#sps_chg_AFV <- Change_trajectory(spyr, value_col="annual.FV", by_cols="species")
-#fwrite(sps_chg_AFV, "Species level AFV loss trajectories.csv")
-#fwrite(sps_chg_N, "Species level Population loss trajectories.csv")
-
-#sps_N <- copy(sps_chg_N)
-#for(qt in c("lci","uci","med","lqrt","uqrt")){
-#sps_N[, (qt) := get(qt) / 1e6]
-#}
-
-#pdf(paste0("output/6-Species level avian pollinator population change trajectories.pdf"))
-
-#plot_pages <- ceiling(uniqueN(sps_N$species) / 9)
-#for(jj in 1:plot_pages){
-#pmain = ggplot(data = sps_N, aes(x = year, y = med)) +
-#geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.2, fill = "blue") +
-#geom_ribbon(aes(ymin = lqrt, ymax = uqrt), alpha = 0.2, fill = "skyblue") +
-#geom_line(color = "black", linewidth = 0.8) +
-#labs(
-#x = "",
-#y = "Changes in North American populations (Millions)"
-#) +
-#theme_minimal() +
-#theme(legend.position = "none") +
-#facet_wrap_paginate(~species, 
-#ncol = 3, 
-#nrow = 3, 
-#scales = "free_y", 
-#page = jj)
-
-#print(pmain)
-#}
-
-#dev.off()
-
-# sps_AFV <- copy(sps_chg_AFV)
-# for(qt in c("lci","uci","med","lqrt","uqrt")){
-#   sps_AFV[, (qt) := get(qt) / 1e9]
-# }
-
-# pdf(paste0("output/6-Species level AFV change trajectories.pdf"))
-# 
-# plot_pages2 <- ceiling(uniqueN(sps_AFV$species) / 9)
-# for(jj in 1:plot_pages2){
-#   pmain = ggplot(data = sps_AFV, aes(x = year, y = med)) +
-#     geom_ribbon(aes(ymin = lci, ymax = uci), alpha = 0.2, fill = "blue") +
-#     geom_ribbon(aes(ymin = lqrt, ymax = uqrt), alpha = 0.2, fill = "skyblue") +
-#     geom_line(color = "black", linewidth = 0.8) +
-#     labs(
-#       x = "",
-#       y = "Changes in AFV (Billions)"
-#     ) +
-#     theme_minimal() +
-#     theme(legend.position = "none") +
-#     facet_wrap_paginate(~species, 
-#                         ncol = 3, 
-#                         nrow = 3, 
-#                         scales = "free_y", 
-#                         page = jj)
-#   
-#   print(pmain)
-# }
-# 
-# dev.off()
 
 
 # Continental change trajectories (population and annual.FV), relative to the first year
@@ -1887,17 +1335,17 @@ pmain = ggplot(data = cont_N, aes(x = year, y = med)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   labs(
     x = "Year",
-    y = "Total change in no. of North American avian pollinators (Millions)") + 
-  scale_x_continuous(limits = c(1970, 2025), expand = c(0, 0)) +
+    y = "Change in no. of avian nectarivores (Millions)") + 
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = seq(-60, 0, by = 10), expand = expansion(mult = c(0.05, 0.1))) +
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
+        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+        axis.title = element_text(size = 22),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1921,17 +1369,17 @@ pmain = ggplot(data = cont_AFV, aes(x = year, y = med)) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   labs(
     x = "Year",
-    y = "Total change in North American AFV (Billions)") + 
-  scale_x_continuous(limits = c(1970, 2025), expand = c(0, 0)) +
+    y = "Change in AFV (Billions)") + 
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-        axis.title = element_text(size = 18),
+        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+        axis.title = element_text(size = 22),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1948,9 +1396,9 @@ dev.off()
 #----------------------------------
 
 # Group-level change trajectories
-skip_groups <- c("Winter.Biome", "Family")
+skip_groups <- c("species", "Order")
 group_chg <- list()
-#group_chg_inv <- list()
+
 for (nm in names(group_draws)) {
   if (nm %in% skip_groups) {
     cat("Skipping group:", nm, "\n")
@@ -1962,10 +1410,6 @@ for (nm in names(group_draws)) {
   chg_N   <- Change_trajectory(dt, value_col = "N_draw",    by_cols = "level")
   chg_AFV <- Change_trajectory(dt, value_col = "annual.FV", by_cols = "level")
   group_chg[[nm]] <- list(N = chg_N, AFV = chg_AFV)
-  
-  # chg_N_inv   <- Change_trajectory_inverse(dt, value_col = "N_draw",    by_cols = "level")
-  # chg_AFV_inv <- Change_trajectory_inverse(dt, value_col = "annual.FV", by_cols = "level")
-  # group_chg_inv[[nm]] <- list(N = chg_N_inv, AFV = chg_AFV_inv)
   
   export_N   <- copy(chg_N)
   export_AFV <- copy(chg_AFV)
@@ -1986,26 +1430,25 @@ for (nm in names(group_draws)) {
     chg_AFV_level[, (qt1) := get(qt1) / 1e9]
   }
   
-  label_dt1 <- chg_AFV_level[year == end.yr]
+  label_dt1 <- chg_AFV_level[year == 2010]
   
   pmain = ggplot(data = chg_AFV_level,aes(x = year,y = med))+
     geom_ribbon(aes(x = year,ymin = lci,ymax = uci,group = level,fill = level),alpha = 0.2)+
     geom_line(aes(colour = level))+
-    geom_label_repel(data = label_dt1,aes(label = level,colour = level),xlim = c(2017,2032), size = 6)+
     labs(x = "Year",y = "Change in AFV (Billions)")+
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-    scale_x_continuous(limits = c(1970, 2025), breaks = seq(1970, 2020, by=10), expand = expansion(mult = c(0, 0.1))) +
+    scale_x_continuous(limits = c(1970, 2020), breaks = seq(1970, 2020, by=10), expand = expansion(mult = c(0, 0.05))) +
     scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-    scale_fill_viridis_d(option = "viridis") + 
-    scale_color_viridis_d(option = "viridis") +
+    scale_fill_manual(values = fig_palette) + 
+    scale_color_manual(values = fig_palette)+
     theme_minimal()+
     theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
           panel.grid.minor = element_blank(), 
           axis.line.x = element_line(color = "black", linewidth = 0.6),
           axis.line.y = element_line(color = "black", linewidth = 0.6),
-          axis.text.x = element_text(color = "black", size = 16, margin = margin(t = 5)),
-          axis.text.y = element_text(color = "black", size = 16, margin = margin(r = 5)),
-          axis.title = element_text(size = 18),
+          axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
+          axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
+          axis.title = element_text(size = 22),
           axis.title.x = element_text(margin = margin(t = 10)),
           axis.title.y = element_text(margin = margin(r = 10)),
     )
@@ -2021,117 +1464,7 @@ for (nm in names(group_draws)) {
 }
 
 
-# -------------------------- Plotting AFV trajectories by species ------------------------
-
-spafvchg <- group_chg[["species"]][["AFV"]]
-colnames(spafvchg)[colnames(spafvchg) == "level"] <- "species"
-spafvchg_2017 <- spafvchg[year==2017]
-spafvchg_2017$AFV_decline = F
-spafvchg_2017[which(spafvchg_2017$med < 0),"AFV_decline"] = T
-
-spafv <- copy(spyr_summ)
-spafv <- merge(spafv, splist3[,c("species", "Breeding.Biome")], by=c("species"), all.x = TRUE)
-
-spafvchg_2017 <- spafvchg_2017[order(spafvchg_2017$med),] #sorting species from largest decrease to largest increase
-spafvchg_2017_ord = unique(spafvchg_2017$species)
-
-spafvchg_2017$AFV_sort = factor(spafvchg_2017$species,levels = spafvchg_2017_ord,ordered = T)
-spafv$AFV_sort = factor(spafv$species,levels = spafvchg_2017_ord,ordered = T)
-
-spafv = spafv[order(spafv$AFV_sort,spafv$year),]
-
-for(j in c("AFV_med","AFV_lci","AFV_uci")){
-  spafv[, (j) := get(j) / 1e9]
-}
-
-decs_afv = which(spafvchg_2017$AFV_decline)
-gns_afv = which(spafvchg_2017$AFV_decline == F)
-
-spafvchg_2017[decs_afv, AFV_labs := paste0(
-  signif(med/1e9, 2), "B ", 
-  " [", signif(lci/1e9, 2), " : ", signif(uci/1e9, 2), "]"
-)]
-
-spafvchg_2017[gns_afv, AFV_labs := paste0(
-  "+", signif(med/1e9, 2), "B ", 
-  " [", signif(lci/1e9, 2), " : ", signif(uci/1e9, 2), "]"
-)]
-
-pdf(paste0("output/Predicted change in AFV by species.pdf"))
-for(jj in 1:ceiling(nspecies/9)){
-  pmain = ggplot(data = spafv,aes(x = year,y = AFV_med))+
-    geom_ribbon(data = spafv,aes(x = year,ymin = AFV_lci,ymax = AFV_uci, fill = Breeding.Biome),alpha = 0.2)+
-    geom_line(data = spafv,aes(x = year,y = AFV_med))+
-    scale_fill_viridis_d(option = "viridis") +
-    labs(x = "",y = "AFV (Billions)")+
-    theme_minimal()+
-    geom_text(data = spafvchg_2017,aes(x = 1990,y = Inf,label = AFV_labs),vjust = 2,size = 5, inherit.aes = FALSE)+
-    theme(legend.position = "none",
-          panel.grid.minor = element_blank(),
-          
-          axis.title.y = element_text(size = 18, margin = margin(r = 10)), 
-          
-          axis.text = element_text(color = "black", size = 15),
-          axis.text.x = element_text(margin = margin(t = 15)),
-          
-          strip.text = element_text(size = 15))+
-    
-    facet_wrap_paginate(~AFV_sort,ncol = 3,nrow = 3,scales = "free_y",page = jj)
-  print(pmain)
-  
-  ggsave(
-    filename = paste0("output/Predicted change in AFV by species page ", jj, ".png"), 
-    plot = pmain, 
-    width = 10, 
-    height = 10, 
-    units = "in", 
-    dpi = 300,
-    bg = "white"
-  )
-}
-dev.off()
-
-
-#------------------------------------------
-#   chg_N_level <- copy(chg_N)
-#   for(qt2 in c("lci","uci","med","lqrt","uqrt")){
-#     chg_N_level[, (qt2) := get(qt2) / 1e6]
-#   }
-#   
-#   label_dt2 <- chg_N_level[year == end.yr]
-#   
-#   pmain = ggplot(data = chg_N_level,aes(x = year,y = med))+
-#     geom_ribbon(aes(x = year,ymin = lci,ymax = uci,group = level,fill = level),alpha = 0.2)+
-#     geom_line(aes(colour = level))+
-#     geom_label_repel(data = label_dt2,aes(label = level,colour = level),xlim = c(2017,2030), size = 5)+
-#     labs(x = "",y = "Change in Avian Pollinator Populations (Millions)")+
-#     xlim(1970,2025)+
-#     theme_minimal()+
-#     theme_bw() +
-#     theme(legend.position = "none", panel.grid.major = element_blank(),
-#           panel.grid.minor = element_blank(), 
-#           axis.text.x = element_text(size=15),
-#           axis.text.y = element_text(size=15),
-#           axis.title.y = element_text(size = 16))
-#   
-#   pdf(paste0("output/", nm, " level Avian Pollinator Population change trajectories.pdf"))
-#   print(pmain)
-#   dev.off()
-#   png(paste0("output/", nm, " level Avian Pollinator Population change trajectories.png"), width = 4000, height = 2500, res = 300)
-#   print(pmain)
-#   dev.off()
-# }
-
-
 # -------------------------- AFV loss summary table --------------------------
-
-# This function calculates proportional change of AFV (Current - Base) / Base for each draw
-
-# cont_chg_N_inv   <- Change_trajectory_inverse(cont,      value_col = "N_draw",    by_cols = character(0))
-# cont_chg_AFV_inv <- Change_trajectory_inverse(cont,      value_col = "annual.FV", by_cols = character(0))
-# 
-# cont_N_inv <- copy(cont_chg_N_inv)
-# cont_AFV_inv <- copy(cont_chg_AFV_inv)
 
 AFV_prop_loss <- function(dt, value_col, by_cols) {
   # Extract base year values (1970)
@@ -2165,7 +1498,7 @@ lost.afv.s <- merge(lost.afv.s,
                     by = "species")
 
 # Define levels to include in the summary (excluding 'species' as it is the base)
-sum_levels <- c("Breeding.Biome", "Order", "specialization_lvl", "Habitat")
+sum_levels <- c("Breeding.Biome", "specialization_lvl", "Habitat")
 
 # Initialize with Continental level change (Total AFV change)
 cont_AFV_lost <- cont_AFV[year == end.yr]
@@ -2273,7 +1606,7 @@ forest_plot <- function(data) {
     labs(x = "Change in AFV since 1970 (%)",
          y = "") +
     scale_x_continuous(breaks = pretty) +
-    scale_color_viridis_d(option = "viridis") +
+    scale_color_manual(values = fig_palette)+
     theme_minimal() +
     theme(
       legend.position = "none",
@@ -2281,9 +1614,9 @@ forest_plot <- function(data) {
       panel.grid.major = element_line(color = "gray50", linewidth = 0.2, linetype = "dashed"),
       panel.grid.minor = element_blank(),
       panel.grid.major.y = element_blank(), 
-      axis.text.y = element_text(color = "black", size = 16),
-      axis.text.x = element_text(color = "black", size = 16),
-      axis.title.x = element_text(size = 18, margin = margin(t = 10))
+      axis.text.y = element_text(color = "black", size = 20),
+      axis.text.x = element_text(color = "black", size = 20),
+      axis.title.x = element_text(size = 20, margin = margin(t = 10))
     )
 }
 
@@ -2294,7 +1627,7 @@ habitat_data <- subset(AFVloss_forest, Level == "Habitat")
 p_habitat <- forest_plot(habitat_data)
 
 png("output/Breeding Biome level AFV proportional change forest plot.png", 
-    width = 1600, height = 2500, res = 300)
+    width = 1800, height = 2500, res = 300)
 print(p_biome)
 dev.off()
 pdf("output/Breeding Biome level AFV proportional change forest plot.pdf", 
@@ -2303,7 +1636,7 @@ print(p_biome)
 dev.off()
 
 png("output/Habitat level AFV proportional change forest plot.png", 
-    width = 1500, height = 2500, res = 300)
+    width = 1800, height = 2500, res = 300)
 print(p_habitat)
 dev.off()
 pdf("output/Habitat level AFV proportional change forest plot.pdf", 
@@ -2472,46 +1805,7 @@ for(qt in c("lci","uci","med")){
 sp_abs_summ_biome <- sp_abs_summ[order(Breeding.Biome, med)]
 sp_abs_summ_biome$species <- factor(sp_abs_summ_biome$species, levels = sp_abs_summ_biome$species)
 
-#sp_abs_summ$species <- reorder(sp_abs_summ$species, sp_abs_summ$med)
-
-#split_y <- sum(sp_abs_summ$med < 0) + 0.5
-
 color_palette <- c("Decrease" = "#E69F00", "Increase" = "#56B4E9")
-
-# p_abs <- ggplot(sp_abs_summ, aes(x = med, y = species, fill = change_type)) +
-#   geom_hline(yintercept = split_y, color = "black", linetype = "dashed", linewidth = 0.6) +
-#   geom_vline(xintercept = 0, color = "black", linetype = "solid",  linewidth = 0.6) +
-#   geom_col(width = 0.8, alpha = 0.85) +
-#   geom_errorbarh(aes(xmin = lci, xmax = uci), height = 0.2, color = "black", linewidth = 0.4) +
-#   geom_point(aes(color = Breeding.Biome, x = -420), size = 5) +
-#   scale_fill_manual(values = color_palette) +
-#   scale_color_viridis_d(option = "viridis", name = "Breeding Biome") +
-#   scale_x_continuous(breaks = seq(-400, 600, by=200)) +
-#   coord_cartesian(xlim = c(-400, 600), clip = "off") +
-#   labs(
-#     x="Absolute change in AFV since 1970 (Billions)",
-#     y=NULL
-#   )+
-#   theme_minimal()+
-#   theme(legend.position = "none", 
-#         panel.grid.major = element_line(color = "gray50", linewidth = 0.2, linetype = "dashed"),
-#         panel.grid.major.y = element_blank(),
-#         panel.grid.minor = element_blank(), 
-#         axis.line.x = element_line(color = "black", linewidth = 0.6),
-#         axis.text.x = element_text(color = "black", size = 14, margin = margin(t = 5)),
-#         axis.text.y = element_text(color = "black", size = 14, margin = margin(r = 5)),
-#         axis.title = element_text(size = 16),
-#         axis.title.x = element_text(margin = margin(t = 10)),
-#   )
-# 
-# png("output/Histogram of species-level absolute change in AFV 1970 to 2017.png", 
-#     width = 2200, height = 2000, res = 300)
-# print(p_abs)
-# dev.off()
-# pdf("output/Histogram of species-level absolute change in AFV 1970 to 2017.pdf", 
-#     width = 8, height = 8)
-# print(p_abs)
-# dev.off()
 
 p_abs <- ggplot(sp_abs_summ_biome, aes(x = med, y = species, fill = change_type)) +
   
@@ -2792,87 +2086,6 @@ source("models/uncertainty source analysis-NV only.txt")
 source("models/uncertainty source analysis-NC only.txt")
 
 source("models/uncertainty source analysis-N only.txt")
-
-
-### plot the contribution of each variable to total uncertainty in AFV of 1970 and 2017
-uncertainty_dt <- data.table(
-  Year = c(rep(1970, 7), rep(2017, 7)),
-  
-  Source = rep(c("FMR equation", "% of nectar in birds' diet", "% of nectar extracted by birds", 
-                 "Body Mass", "Nectar concentration", "Nectar volume", "Population size estimates"), 2),
-  
-  Raw_Prop = c(
-    fmr_1970_error_prop, fn_1970_error_prop, fne_1970_error_prop, 
-    ms_1970_error_prop, nc_1970_error_prop, nv_1970_error_prop, n_1970_error_prop,
-    
-    fmr_2017_error_prop, fn_2017_error_prop, fne_2017_error_prop, 
-    ms_2017_error_prop, nc_2017_error_prop, nv_2017_error_prop, n_2017_error_prop
-  )
-)
-
-uncertainty_dt[, Normalized_Prop := Raw_Prop / sum(Raw_Prop)*100, by = Year]
-
-plot_dt <- copy(uncertainty_dt)
-
-plot_dt[Year == "1970", Year_Label := "(a) 1970"]
-plot_dt[Year == "2017", Year_Label := "(b) 2017"]
-
-plot_dt$Year_Label <- factor(plot_dt$Year_Label, levels = c("(b) 2017", "(a) 1970"))
-
-order_source <- plot_dt[Year == "1970"][order(-Normalized_Prop)]$Source
-plot_dt$Source <- factor(plot_dt$Source, levels = order_source)
-
-plot_uncertainty <- ggplot(plot_dt, aes(x = Normalized_Prop, y = Year_Label, fill = Source)) +
-  
-  geom_col(width = 0.5) +
-  geom_text(aes(label = ifelse(Normalized_Prop > 3, paste0(round(Normalized_Prop, 1), "%"), "")), 
-            position = position_stack(vjust = 0.5), size = 2.5, color = "white", fontface = "bold") +
-  
-  scale_fill_viridis_d(option = "viridis") +
-  
-  scale_x_continuous(breaks = c(0, 25, 50, 75, 100), 
-                     labels = c("0%", "25%", "50%", "75%", "100%"),
-                     expand = expansion(mult = c(0, 0))) +
-  scale_y_discrete(expand = expansion(add = c(0.5, 0.5))) +
-  
-  labs(
-    title = NULL, x = NULL, y = NULL, fill = NULL
-  )+
-  
-  theme_minimal() +
-  theme(
-    axis.line.x = element_blank(),
-    axis.ticks.x = element_line(color = "grey50", size = 0.5),
-    axis.ticks.length.x = unit(0.2, "cm"),
-    
-    axis.line.y = element_blank(),
-    axis.ticks.y = element_blank(),
-    
-    axis.text.x = element_text(color = "black", size = 10, vjust = 1,
-                               margin = margin(t = 1)),
-    axis.text.y = element_text(color = "black", size = 10, margin = margin(r = 5)),
-    
-    legend.position = "right",
-    legend.text = element_text(size = 8),
-    legend.key.size = unit(0.8, "cm"),
-    
-    panel.grid.major = element_line(color = "gray50", linetype = "dashed", linewidth = 0.2),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    
-    panel.background = element_rect(fill = "#EBEBEB", color = NA),
-    plot.background = element_rect(fill = "white", color = NA)
-  )
-
-png("output/Source of uncertainty in total AFV of 1970 and 2017.png", 
-    width = 3000, height = 1000, res = 300)
-print(plot_uncertainty)
-dev.off()
-pdf("output/Source of uncertainty in total AFV of 1970 and 2017.pdf", 
-    width = 9, height = 3)
-print(plot_uncertainty)
-dev.off()
-
 
 
 ### plot the contribution of each variable to total uncertainty in AFV change from 1970 to 2017
