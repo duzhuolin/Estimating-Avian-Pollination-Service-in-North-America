@@ -758,7 +758,7 @@ pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
     fill = "white",
     label.size = NA, 
     hjust = 1,          
-    size = 7,
+    size = 9,
     inherit.aes = FALSE 
   ) +
   labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
@@ -771,9 +771,9 @@ pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-        axis.title = element_text(size = 22),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -804,10 +804,10 @@ spcllab$label_x <- NA
 spcllab$label_y <- NA
 
 spcllab$label_x[spcllab$specialization_lvl == "specialized"] <- 2010
-spcllab$label_y[spcllab$specialization_lvl == "specialized"] <- -10
+spcllab$label_y[spcllab$specialization_lvl == "specialized"] <- -12
 
 spcllab$label_x[spcllab$specialization_lvl == "generalized"] <- 2010
-spcllab$label_y[spcllab$specialization_lvl == "generalized"] <- -22
+spcllab$label_y[spcllab$specialization_lvl == "generalized"] <- -23
 
 pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = specialization_lvl,fill = specialization_lvl),alpha = 0.2)+
@@ -817,7 +817,7 @@ pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
              fill = "white",
              label.size = NA,  
              hjust = 1,        
-             size = 7) +
+             size = 9) +
   labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
   scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
@@ -828,9 +828,9 @@ pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-        axis.title = element_text(size = 22),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -876,7 +876,7 @@ pmain = ggplot(data = hbpop,aes(x = year,y = med/1e6))+
              fill = "white",
              label.size = NA,  
              hjust = 1,        
-             size = 7) +
+             size = 9) +
   labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
   scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
@@ -887,9 +887,9 @@ pmain = ggplot(data = hbpop,aes(x = year,y = med/1e6))+
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-        axis.title = element_text(size = 22),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1343,9 +1343,9 @@ pmain = ggplot(data = cont_N, aes(x = year, y = med)) +
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-        axis.title = element_text(size = 22),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1377,9 +1377,9 @@ pmain = ggplot(data = cont_AFV, aes(x = year, y = med)) +
         panel.grid.minor = element_blank(), 
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-        axis.title = element_text(size = 22),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
         axis.title.x = element_text(margin = margin(t = 10)),
         axis.title.y = element_text(margin = margin(r = 10)),
   )
@@ -1446,9 +1446,9 @@ for (nm in names(group_draws)) {
           panel.grid.minor = element_blank(), 
           axis.line.x = element_line(color = "black", linewidth = 0.6),
           axis.line.y = element_line(color = "black", linewidth = 0.6),
-          axis.text.x = element_text(color = "black", size = 20, margin = margin(t = 5)),
-          axis.text.y = element_text(color = "black", size = 20, margin = margin(r = 5)),
-          axis.title = element_text(size = 22),
+          axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+          axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+          axis.title = element_text(size = 25),
           axis.title.x = element_text(margin = margin(t = 10)),
           axis.title.y = element_text(margin = margin(r = 10)),
     )
@@ -1605,7 +1605,7 @@ forest_plot <- function(data) {
     geom_pointrange(aes(xmin = plostlci*100, xmax = plostuci*100), size = 1, linewidth = 1) +
     labs(x = "Change in AFV since 1970 (%)",
          y = "") +
-    scale_x_continuous(breaks = pretty) +
+    scale_x_continuous(breaks = pretty, expand = expansion(mult = c(0.05, 0.1))) +
     scale_color_manual(values = fig_palette)+
     theme_minimal() +
     theme(
@@ -1614,9 +1614,9 @@ forest_plot <- function(data) {
       panel.grid.major = element_line(color = "gray50", linewidth = 0.2, linetype = "dashed"),
       panel.grid.minor = element_blank(),
       panel.grid.major.y = element_blank(), 
-      axis.text.y = element_text(color = "black", size = 20),
-      axis.text.x = element_text(color = "black", size = 20),
-      axis.title.x = element_text(size = 20, margin = margin(t = 10))
+      axis.text.y = element_text(color = "black", size = 25),
+      axis.text.x = element_text(color = "black", size = 25),
+      axis.title.x = element_text(size = 25, margin = margin(t = 10))
     )
 }
 
@@ -1627,7 +1627,7 @@ habitat_data <- subset(AFVloss_forest, Level == "Habitat")
 p_habitat <- forest_plot(habitat_data)
 
 png("output/Breeding Biome level AFV proportional change forest plot.png", 
-    width = 1800, height = 2500, res = 300)
+    width = 2250, height = 2500, res = 300)
 print(p_biome)
 dev.off()
 pdf("output/Breeding Biome level AFV proportional change forest plot.pdf", 
@@ -1636,7 +1636,7 @@ print(p_biome)
 dev.off()
 
 png("output/Habitat level AFV proportional change forest plot.png", 
-    width = 1800, height = 2500, res = 300)
+    width = 2000, height = 2500, res = 300)
 print(p_habitat)
 dev.off()
 pdf("output/Habitat level AFV proportional change forest plot.pdf", 
