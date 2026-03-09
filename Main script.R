@@ -638,7 +638,7 @@ jagsMod = jags(data = data.jags,
 
 #save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))
@@ -914,8 +914,6 @@ lossa = sumq[paste0("Nalost[",1:nyears,"]"),c("med","lci","uci")]
 names(lossa) = paste0("Loss_",names(lossa))
 lossa = cbind(totp,lossa)
 
-# write.csv(lossa,row.names = F,"output/5-Continental level avian pollinator trajectories N and loss.csv")
-
 lost = as.data.frame(sumq["Nlost",])
 
 lost.s = as.data.frame(sumq[paste0("Nlost.S[",1:nspecies,"]"),c("med","lci","uci","lqrt","uqrt")])
@@ -955,6 +953,7 @@ lost.s = cbind(lost.s,n2.S)
 
 write.csv(lost.s,paste0("output/Avian pollinator cumulative population change by species.csv"))
 
+
 # identify the most threatened species
 lost_most <- as.data.table(lost.s)
 high_threat <- lost_most[Proportional_loss_lci > 0 & Proportional_loss_med > 0.5]
@@ -990,7 +989,7 @@ for(j in 1:nrow(allsout)){
 write.csv(allsout,"output/Summary-Net change in abundance across the North American avian pollinators.csv",  row.names = F)
 
 
-## Overall population trajectory
+#continental pollinator population trajectory
 lostpy = 0.4*max(totp$N_med)
 if(lost$med > 0){
   lostp = paste0(signif(lost$med/1e6,4)," Million avian pollinators lost [",signif(lost$lci/1e6,4),"-",signif(lost$uci/1e6,4),"]")
@@ -1027,13 +1026,42 @@ indices2$rescindex.raw = indices2$index.s.raw*indices2$meanpopstart
 sppop2 = merge(sppop,indices2[,c("species","rescindex","rescindex.raw","year")],
                by = c("species","year"))
 
+
 for(j in c("N_med","N_lci","N_uci")){
   totp[,j] = totp[,j]/1e6
 }
 
 splabs = sppop2[which(sppop2$year == max(sppop2$year)),]
 
-# # rescaling raw index and smoothed index to ahundance and adding raw ahundance points to fitted line
+pmain = ggplot(data = totp,aes(x = year,y = N_med))+
+  geom_ribbon(aes(x = year,ymin = N_lci,ymax = N_uci),fill = "#31688EFF",alpha = 0.2)+
+  geom_line(color = "#440154FF", linewidth = 1)+
+  labs(x = "Year",
+       y = "No. of avian nectarivores (Millions)")+
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
+  theme_minimal()+
+  theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
+        panel.grid.minor = element_blank(), 
+        axis.line.x = element_line(color = "black", linewidth = 0.6),
+        axis.line.y = element_line(color = "black", linewidth = 0.6),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+  )
+
+pdf(paste0("output/Continental level avian pollinator population trajectory.pdf"),
+    width = 10,
+    height = 7)
+print(pmain)
+dev.off()
+png("output/Continental level avian pollinator population trajectory.png", width = 3000, height = 2500, res = 300)
+print(pmain)
+dev.off()
+
+
+# rescaling raw index and smoothed index to ahundance and adding raw ahundance points to fitted line
 lost.st = lost.s[rev(order(lost.s$Loss_med)),] #sorting species from largest decrease to largest increase
 spord = unique(lost.st$species)
 sppop2$spsort = factor(sppop2$species,levels = spord,ordered = T)
@@ -1254,6 +1282,40 @@ cont_summ <- cont[, {
 
 fwrite(cont_summ,"output/Continental level N and AFV trajectories.csv")
 
+
+#continental AFV trajectory
+for(j in c("AFV_med","AFV_lci","AFV_uci")){
+  cont_summ[, (j) := get(j) / 1e9]
+}
+
+pmain = ggplot(data = cont_summ,aes(x = year,y = AFV_med))+
+  geom_ribbon(aes(x = year,ymin = AFV_lci,ymax = AFV_uci),fill = "#31688EFF",alpha = 0.2)+
+  geom_line(color = "#440154FF", linewidth = 1)+
+  labs(x = "Year",
+       y = "AFV (Billions)")+
+  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
+  theme_minimal()+
+  theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
+        panel.grid.minor = element_blank(), 
+        axis.line.x = element_line(color = "black", linewidth = 0.6),
+        axis.line.y = element_line(color = "black", linewidth = 0.6),
+        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
+        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
+        axis.title = element_text(size = 25),
+        axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+  )
+
+pdf(paste0("output/Continental level AFV trajectory.pdf"),
+    width = 10,
+    height = 7)
+print(pmain)
+dev.off()
+png("output/Continental level AFV trajectory.png", width = 3000, height = 2500, res = 300)
+print(pmain)
+dev.off()
+
+
 # Build a species-to-level key for each level
 levels <- c("species","Breeding.Biome","Order","specialization_lvl", "Habitat")
 keys <- lapply(levels, function(col) pol_param[, .(species, level = get(col))])
@@ -1401,7 +1463,10 @@ group_chg <- list()
 
 for (nm in names(group_draws)) {
   if (nm %in% skip_groups) {
-    cat("Skipping group:", nm, "\n")
+    dt <- group_draws[[nm]]
+    chg_N   <- Change_trajectory(dt, value_col = "N_draw",    by_cols = "level")
+    chg_AFV <- Change_trajectory(dt, value_col = "annual.FV", by_cols = "level")
+    group_chg[[nm]] <- list(N = chg_N, AFV = chg_AFV)
     next
   }
   cat("Processing group:", nm, "\n")
@@ -1462,6 +1527,82 @@ for (nm in names(group_draws)) {
   dev.off()
   
 }
+
+
+# -------------------------- Plotting AFV trajectories by species ------------------------
+
+spafvchg <- group_chg[["species"]][["AFV"]]
+colnames(spafvchg)[colnames(spafvchg) == "level"] <- "species"
+spafvchg_2017 <- spafvchg[year==2017]
+spafvchg_2017$AFV_decline = F
+spafvchg_2017[which(spafvchg_2017$med < 0),"AFV_decline"] = T
+
+spafv <- copy(spyr_summ)
+spafv <- merge(spafv, splist3[,c("species", "Breeding.Biome")], by=c("species"), all.x = TRUE)
+
+spafvchg_2017 <- spafvchg_2017[order(spafvchg_2017$med),] #sorting species from largest decrease to largest increase
+spafvchg_2017_ord = unique(spafvchg_2017$species)
+
+spafvchg_2017$AFV_sort = factor(spafvchg_2017$species,levels = spafvchg_2017_ord,ordered = T)
+spafv$AFV_sort = factor(spafv$species,levels = spafvchg_2017_ord,ordered = T)
+
+spafv = spafv[order(spafv$AFV_sort,spafv$year),]
+
+for(j in c("AFV_med","AFV_lci","AFV_uci")){
+  spafv[, (j) := get(j) / 1e9]
+}
+
+decs_afv = which(spafvchg_2017$AFV_decline)
+gns_afv = which(spafvchg_2017$AFV_decline == F)
+
+spafvchg_2017[decs_afv, AFV_labs := paste0(
+  signif(med/1e9, 2), "B ", 
+  " [", signif(lci/1e9, 2), " : ", signif(uci/1e9, 2), "]"
+)]
+
+spafvchg_2017[gns_afv, AFV_labs := paste0(
+  "+", signif(med/1e9, 2), "B ", 
+  " [", signif(lci/1e9, 2), " : ", signif(uci/1e9, 2), "]"
+)]
+
+pdf(paste0("output/Predicted change in AFV by species.pdf"))
+for(jj in 1:ceiling(nspecies/9)){
+  pmain = ggplot(data = spafv,aes(x = year,y = AFV_med))+
+    geom_ribbon(data = spafv,aes(x = year,ymin = AFV_lci,ymax = AFV_uci, fill = Breeding.Biome),alpha = 0.2)+
+    geom_line(data = spafv,aes(x = year,y = AFV_med))+
+    scale_fill_manual(values = fig_palette) +
+    labs(x = "",y = "AFV (Billions)")+
+    theme_minimal()+
+    geom_text(data = spafvchg_2017,aes(x = 1990,y = Inf,label = AFV_labs),vjust = 2,size = 5, inherit.aes = FALSE)+
+    theme(legend.position = "none",
+          
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          
+          axis.line.x = element_line(color = "black", linewidth = 0.6),
+          axis.line.y = element_line(color = "black", linewidth = 0.6),
+          
+          axis.title.y = element_text(size = 18, margin = margin(r = 10)), 
+          
+          axis.text = element_text(color = "black", size = 15),
+          axis.text.x = element_text(margin = margin(t = 15)),
+          
+          strip.text = element_text(size = 15))+
+    
+    facet_wrap_paginate(~AFV_sort,ncol = 3,nrow = 3,scales = "free_y",page = jj)
+  print(pmain)
+  
+  ggsave(
+    filename = paste0("output/Predicted change in AFV by species page ", jj, ".png"), 
+    plot = pmain, 
+    width = 10, 
+    height = 10, 
+    units = "in", 
+    dpi = 300,
+    bg = "white"
+  )
+}
+dev.off()
 
 
 # -------------------------- AFV loss summary table --------------------------
