@@ -638,7 +638,7 @@ jagsMod = jags(data = data.jags,
 
 #save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))
@@ -2046,18 +2046,14 @@ grp_70_17 <- sp_70_17[, .(
   grp_AFV_2017 = sum(AFV_2017, na.rm = TRUE)
 ), by = .(Breeding.Biome, Habitat, draw)]
 
-grp_70_17[, grp_abs_change := grp_AFV_2017 - grp_AFV_1970]
+grp_70_17[, grp_rel_change := (grp_AFV_2017 - grp_AFV_1970) / grp_AFV_1970 * 100] 
 
-grp_abs_summ <- grp_70_17[, {
-  abs <- summarize_draws(grp_abs_change)
-  abs
+grp_rel_summ <- grp_70_17[, {
+  rel <- summarize_draws(grp_rel_change)
+  rel
 }, by = c("Breeding.Biome", "Habitat")]
 
-for(qt in c("lci","uci","med", "lqrt", "uqrt")){
-  grp_abs_summ[, (qt) := get(qt) / 1e9]
-}
-
-p_group_box <- ggplot(grp_abs_summ, aes(x = "")) +
+p_group_box <- ggplot(grp_rel_summ, aes(x = "")) +
   geom_boxplot(
     aes(ymin = lci, lower = lqrt, middle = med, upper = uqrt, ymax = uci),
     stat = "identity",
@@ -2070,7 +2066,7 @@ p_group_box <- ggplot(grp_abs_summ, aes(x = "")) +
   
   labs(
     x = "",
-    y = "Absolute change in AFV since 1970 (Billions)"
+    y = "Relative change in AFV since 1970 (%)"
   ) +
   theme_minimal() +
   theme(
@@ -2093,11 +2089,11 @@ p_group_box <- ggplot(grp_abs_summ, aes(x = "")) +
     legend.position = "none"
   )
 
-png("output/Boxplot of AFV change distribution by habitat in each biome.png", width = 1800, height = 2400, res = 300)
+png("output/Boxplot of AFV relative change distribution by habitat in each biome.png", width = 1800, height = 2400, res = 300)
 print(p_group_box)
 dev.off()
 
-pdf("output/Boxplot of AFV change distribution by habitat in each biome.pdf", width = 6, height = 8)
+pdf("output/Boxplot of AFV relative change distribution by habitat in each biome.pdf", width = 6, height = 8)
 print(p_group_box)
 dev.off()
 
