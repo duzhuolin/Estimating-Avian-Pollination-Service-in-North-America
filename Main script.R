@@ -1,14 +1,15 @@
 #### jags function for SOCB model
+library(data.table)
+library(ggforce)
 library(ggplot2)
 library(ggrepel)
-library(ggforce)
-library(rjags)
 library(jagsUI)
-library(stringr)
 library(MCMCvis)
 library(mgcv)
-library(data.table)
+library(rjags)
+library(stringr)
 library(TruncatedNormal)
+library(renv)
 
 ind = "index"
 lci = "lci"
