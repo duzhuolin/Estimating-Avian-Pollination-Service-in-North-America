@@ -273,27 +273,7 @@ Nsum.spcl[sp,y] <- sum(N[spinspcls[1:nsppspcls[sp],sp],y]) #estimated group tota
 
 }#sp specialization level
 
-################################
 
-for(hb in 1:nhbs){
-
-Nlost.hb[hb] <- Nsum.hb[hb,1]-Nsum.hb[hb,nyears] ### number of birds lost overall species - positive = loss
-plost.hb[hb] <- 1 - (Nsum.hb[hb,nyears]/Nsum.hb[hb,1]) ### number of birds lost overall species
-
-Nalost.hb[hb,1] <- 0
-
-for(y in 2:nyears){
-Nalost.hb[hb,y] <- -1*(Nsum.hb[hb,1]-Nsum.hb[hb,y])
-}
-
-
-for(y in 1:nyears){
-Nsum.hb[hb,y] <- sum(N[spinhbs[1:nspphbs[hb],hb],y]) #estimated group total individuals
-
-
-}
-
-}#hb habitat
 
 ################################
 

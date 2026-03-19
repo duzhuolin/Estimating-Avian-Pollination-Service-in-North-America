@@ -209,11 +209,10 @@ indices <- indices[order(indices$firstyear,indices$species,indices$year),]
 splist <- unique(indices[,c("species","firstyear","lastyear")])
 splist3 = merge(splist,popest,by.x = "species",by.y = "species")
 
-#adding taxa (order), habitat, and specialization level to splist3
+#adding taxa (order) and specialization level to splist3
 match_idx <- match(splist3$species, pollinators$species)
 splist3$specialization_lvl <- pollinators$specialization_lvl[match_idx]
 splist3$Order <- pollinators$Order[match_idx]
-splist3$Habitat <- pollinators$Habitat[match_idx]
 
 splist3$spfactor <- factor(splist3$species,
                            levels = splist3$species,
@@ -363,20 +362,6 @@ nspcls = length(nsppspcls)
 spcls = unique(splist[,c("specialization_lvl","spclfact","spclfactn")])
 spcls = spcls[order(spcls$spclfactn),]
 
-### habitat indexing
-
-splist$hbfact = (factor(splist$Habitat))
-splist$hbfactn = as.integer(factor(splist$Habitat))
-
-nspphbs = table(splist$hbfact)
-spinhbs = matrix(NA,nrow = max(nspphbs),ncol = length(nspphbs))
-for(h in 1:length(nspphbs)){
-  hn = names(nspphbs)[h]
-  spinhbs[1:nspphbs[h],h] <- which(splist$Habitat == hn)
-}
-nhbs = length(nspphbs)
-hbs = unique(splist[,c("Habitat","hbfact","hbfactn")])
-hbs = hbs[order(hbs$hbfactn),]
 
 ### indexing for family summaries
 
@@ -530,10 +515,6 @@ data.jags = list(nspecies = nspecies,
                  nsppspcls = nsppspcls,
                  nspcls = nspcls,
                  
-                 spinhbs = spinhbs,
-                 nspphbs = nspphbs,
-                 nhbs = nhbs,
-                 
                  spinfams = spinfams,
                  nsppfams = nsppfams,
                  nfams = nfams,
@@ -580,12 +561,10 @@ params = c("expmu1",
            "Nlost.fam",
            "Nlost.ord",
            "Nlost.spcl",
-           "Nlost.hb",
            "Nlost.biome",
            "Nalost.fam",
            "Nalost.ord",
            "Nalost.spcl",
-           "Nalost.hb",
            "Nlost.migrate",
            "Nalost.migrate",
            "plost.migrate",
@@ -606,7 +585,6 @@ params = c("expmu1",
            "plost.ord",
            "plost.biome",
            "plost.spcl",
-           "plost.hb",
            "plost",
            "plost.S",
            "Nsum.subgrp")
@@ -665,12 +643,6 @@ names(spclp) = paste0("plost.spcl.",names(spclp))
 spcll = cbind(spcll,spclp)
 spcll = cbind(spcll,spcls)
 
-hbl = as.data.frame(sumq[paste0("Nlost.hb[",1:nhbs,"]"),])
-hbp = as.data.frame(sumq[paste0("plost.hb[",1:nhbs,"]"),])
-names(hbp) = paste0("plost.hb.",names(hbp))
-hbl = cbind(hbl,hbp)
-hbl = cbind(hbl,hbs)
-
 biomes = unique(splist[,c("g2","Breeding.Biome")])
 biomes = biomes[order(biomes$g2),]
 biomel = as.data.frame(sumq[paste0("Nlost.biome[",1:ngroups2,"]"),])
@@ -693,19 +665,17 @@ alll$nspecies = nspecies
 biomel$nspecies = nsppbiomes
 ordl$nspecies = nsppords
 spcll$nspecies = nsppspcls
-hbl$nspecies = nspphbs
 nms = names(alll)
 
 names(biomel) = nms
 names(ordl) = nms
 names(spcll) = nms
-names(hbl) = nms
 
 allsums = rbind(alll,
                 biomel,
                 ordl,
                 spcll, 
-                hbl, stringsAsFactors = FALSE)
+                stringsAsFactors = FALSE)
 
 allsout = allsums[,c("Group",
                      "nspecies",
@@ -840,65 +810,6 @@ pdf(paste0("output/specialization_lvl level avian pollinator population change t
 print(pmain)
 dev.off()
 png("output/specialization_lvl level avian pollinator population change trajectory loss.png", width = 3000, height = 2500, res = 300)
-print(pmain)
-dev.off()
-
-
-#### habitat summaries
-
-hbpop = expand.grid(hb = 1:nords,
-                    yrs = 1:nyears)
-hbpop$param = paste0("Nalost.hb[",hbpop$hb,",",hbpop$yrs,"]")
-
-hbpopt = as.data.frame(sumq[hbpop$param,])
-hbpop = cbind(hbpop,hbpopt)
-hbpop = merge(hbpop,hbs,by.x = "hb",by.y = "hbfactn")
-hbpop$year = hbpop$yrs + (base.yr-1)
-hbpop = hbpop[order(hbpop$Habitat,hbpop$year),]
-hblab = hbpop[which(hbpop$year == 2017),]
-
-biomlab$label_x <- NA
-biomlab$label_y <- NA
-
-hblab$label_x[hblab$Habitat == "Forest"] <- 2010
-hblab$label_y[hblab$Habitat == "Forest"] <- -53
-
-hblab$label_x[hblab$Habitat == "Shrubland"] <- 2010
-hblab$label_y[hblab$Habitat == "Shrubland"] <- -17
-
-hblab$label_x[hblab$Habitat == "Woodland"] <- 2010
-hblab$label_y[hblab$Habitat == "Woodland"] <- 25
-
-pmain = ggplot(data = hbpop,aes(x = year,y = med/1e6))+
-  geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Habitat,fill = Habitat),alpha = 0.2)+
-  geom_line(aes(colour = Habitat))+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
-  geom_label(data = hblab, aes(x = label_x, y = label_y, label = Habitat, colour = Habitat),
-             fill = "white",
-             label.size = NA,  
-             hjust = 1,        
-             size = 9) +
-  labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
-  scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
-  scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_manual(values = fig_palette) + 
-  scale_color_manual(values = fig_palette)+
-  theme_minimal()+
-  theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
-        panel.grid.minor = element_blank(), 
-        axis.line.x = element_line(color = "black", linewidth = 0.6),
-        axis.line.y = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
-        axis.text.y = element_text(color = "black", size = 25, margin = margin(r = 5)),
-        axis.title = element_text(size = 25),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        axis.title.y = element_text(margin = margin(r = 10)),
-  )
-
-pdf(paste0("output/Habitat level avian pollinator population change trajectory loss.pdf"), width = 10, height = 7)
-print(pmain)
-dev.off()
-png("output/Habitat level avian pollinator population change trajectory loss.png", width = 3000, height = 2500, res = 300)
 print(pmain)
 dev.off()
 
@@ -1229,8 +1140,7 @@ for (i in seq_len(nrow(pol_param))) {
     Service_days   = r$Service_days,            # days stayed in North America
     Breeding.Biome = r$Breeding.Biome,          # carried for grouping (if present)
     Order          = r$Order,
-    specialization_lvl    = r$specialization_lvl,
-    Habitat          = r$Habitat
+    specialization_lvl    = r$specialization_lvl
   )
 }
 FVR_dt <- rbindlist(FVR_list)
@@ -1318,7 +1228,7 @@ dev.off()
 
 
 # Build a species-to-level key for each level
-levels <- c("species","Breeding.Biome","Order","specialization_lvl", "Habitat")
+levels <- c("species","Breeding.Biome","Order","specialization_lvl")
 keys <- lapply(levels, function(col) pol_param[, .(species, level = get(col))])
 names(keys) <- levels
 
@@ -1636,11 +1546,11 @@ lost.afv.s[, decline := AFV_loss_med < 0]
 
 # Merge with metadata for grouping
 lost.afv.s <- merge(lost.afv.s, 
-                    pol_param[, .(species, Breeding.Biome, Order, specialization_lvl, Habitat)], 
+                    pol_param[, .(species, Breeding.Biome, Order, specialization_lvl)], 
                     by = "species")
 
 # Define levels to include in the summary (excluding 'species' as it is the base)
-sum_levels <- c("Breeding.Biome", "specialization_lvl", "Habitat")
+sum_levels <- c("Breeding.Biome", "specialization_lvl")
 
 # Initialize with Continental level change (Total AFV change)
 cont_AFV_lost <- cont_AFV[year == end.yr]
@@ -1711,7 +1621,7 @@ for(i in 1:nrow(afvsout)){
     
     # Mapping table for metadata columns
     col_map <- c(breedingbiome = "Breeding.Biome", order = "Order", 
-                 specialization_lvl = "specialization_lvl", habitat = "Habitat")
+                 specialization_lvl = "specialization_lvl")
     meta_col <- col_map[lvl_type]
     
     # Get status for species belonging to this specific group
@@ -1727,19 +1637,15 @@ for(i in 1:nrow(afvsout)){
 fwrite(afvsout, "output/Summary-Net change in AFV across the North American avian pollinators.csv", row.names = F)
 
 
-# ------------------ AFV loss Forest Plot for biomes and habitats -------------------
+# ------------------ AFV loss Forest Plot for biomes -------------------
 
 AFVloss_forest <- afvsout[afvsout$Group != "Continental" & 
-                            (grepl("breedingbiome", afvsout$node) | grepl("habitat", afvsout$node)), ]
+                            grepl("breedingbiome", afvsout$node), ]
 
-# Create a 'Level' column to distinguish between Biome and Habitat for facetting
-AFVloss_forest$Level <- ifelse(grepl("breedingbiome", AFVloss_forest$node), "Breeding Biome", "Habitat")
+# Create a 'Level' column to distinguish between Biome for facetting
+AFVloss_forest$Level <- ifelse(grepl("breedingbiome", AFVloss_forest$node), "Breeding Biome")
 
 forest_plot <- function(data) {
-  
-  # # Sort data by median loss (plostmed) from highest to lowest
-  # data$original_order <- 1:nrow(data)
-  #data$Group <- reorder(data$Group, data$plostmed)
   
   ggplot(data, aes(x = plostmed*100, y = Group, color = Group)) +
     # Add a vertical line at 0 (no change)
@@ -1765,9 +1671,6 @@ forest_plot <- function(data) {
 biome_data <- subset(AFVloss_forest, Level == "Breeding Biome")
 p_biome <- forest_plot(biome_data)
 
-habitat_data <- subset(AFVloss_forest, Level == "Habitat")
-p_habitat <- forest_plot(habitat_data)
-
 png("output/Breeding Biome level AFV proportional change forest plot.png", 
     width = 2250, height = 2500, res = 300)
 print(p_biome)
@@ -1775,15 +1678,6 @@ dev.off()
 pdf("output/Breeding Biome level AFV proportional change forest plot.pdf", 
     width = 5, height = 7)
 print(p_biome)
-dev.off()
-
-png("output/Habitat level AFV proportional change forest plot.png", 
-    width = 2000, height = 2500, res = 300)
-print(p_habitat)
-dev.off()
-pdf("output/Habitat level AFV proportional change forest plot.pdf", 
-    width = 4, height = 7)
-print(p_habitat)
 dev.off()
 
 
@@ -1883,7 +1777,7 @@ dev.off()
 
 sp_70_17 <- dcast(sp_sub, species + draw ~ year, value.var = "sp_AFV")
 setnames(sp_70_17, c("species", "draw", "AFV_1970", "AFV_2017"))
-sp_70_17 <- merge(sp_70_17, splist3[, c("species", "Breeding.Biome", "Habitat")], by = "species", all.x = TRUE)
+sp_70_17 <- merge(sp_70_17, splist3[, c("species", "Breeding.Biome")], by = "species", all.x = TRUE)
 
 sp_70_17[, rel_change := (AFV_2017 - AFV_1970) / AFV_1970 * 100]
 
@@ -1936,7 +1830,7 @@ sp_70_17[, abs_change := AFV_2017 - AFV_1970]
 sp_abs_summ <- sp_70_17[, {
   abs <- summarize_draws(abs_change)
   abs
-}, by = c("species", "Breeding.Biome", "Habitat")]
+}, by = c("species", "Breeding.Biome")]
 
 sp_abs_summ[, change_type := ifelse(med < 0, "Decrease", "Increase")]
 
@@ -1992,111 +1886,6 @@ pdf("output/Histogram of species-level absolute change in AFV 1970 to 2017 by bi
 print(p_abs)
 dev.off()
 
-# --------------- Histogram of species-level absolute change in AFV 1970 to 2017 by habitat ------------------------
-
-sp_abs_summ_hab <- sp_abs_summ[order(Habitat, med)]
-sp_abs_summ_hab$species <- factor(sp_abs_summ_hab$species, levels = sp_abs_summ_hab$species)
-
-p_abs <- ggplot(sp_abs_summ_hab, aes(x = med, y = species, fill = change_type)) +
-  
-  geom_col(width = 0.8, alpha = 0.85) +
-  geom_errorbarh(aes(xmin = lci, xmax = uci), height = 0.2, color = "black", linewidth = 0.4) +
-  
-  geom_text(aes(
-    x = ifelse(med < 0, 30, -30), label = species, hjust = ifelse(med < 0, 0, 1)), size = 4.2, color = "black") +
-  
-  geom_vline(xintercept = 0, color = "black", linetype = "solid",  linewidth = 0.6) +
-  scale_fill_manual(values = color_palette) +
-  
-  facet_grid(Habitat ~ ., scales = "free_y", space = "free_y", switch = "y") +
-  
-  scale_x_continuous(limits = c(-450, 600), breaks = seq(-400, 600, by = 200)) +
-  
-  labs(
-    x="Absolute change in AFV since 1970 (Billions)",
-    y=NULL
-  )+
-  theme_minimal()+
-  theme(legend.position = "none", 
-        panel.grid.major = element_line(color = "gray50", linewidth = 0.2, linetype = "dashed"),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor = element_blank(), 
-        axis.line.x = element_line(color = "black", linewidth = 0.6),
-        axis.text.x = element_text(color = "black", size = 14, margin = margin(t = 5)),
-        axis.text.y = element_blank(),
-        axis.title = element_text(size = 16),
-        axis.title.x = element_text(margin = margin(t = 10)),
-        strip.text.y.left = element_text(angle = 0, face = "bold", hjust = 1, size = 16), 
-        strip.placement = "outside", 
-        panel.spacing = unit(1, "lines") 
-  )
-
-png("output/Histogram of species-level absolute change in AFV 1970 to 2017 by habitat.png", 
-    width = 2000, height = 2200, res = 300)
-print(p_abs)
-dev.off()
-pdf("output/Histogram of species-level absolute change in AFV 1970 to 2017 by habitat.pdf", 
-    width = 8, height = 8)
-print(p_abs)
-dev.off()
-
-# --------------- boxplot of AFV change distribution by habitat in each biome------------------------
-
-grp_70_17 <- sp_70_17[, .(
-  grp_AFV_1970 = sum(AFV_1970, na.rm = TRUE),
-  grp_AFV_2017 = sum(AFV_2017, na.rm = TRUE)
-), by = .(Breeding.Biome, Habitat, draw)]
-
-grp_70_17[, grp_rel_change := (grp_AFV_2017 - grp_AFV_1970) / grp_AFV_1970 * 100] 
-
-grp_rel_summ <- grp_70_17[, {
-  rel <- summarize_draws(grp_rel_change)
-  rel
-}, by = c("Breeding.Biome", "Habitat")]
-
-p_group_box <- ggplot(grp_rel_summ, aes(x = "")) +
-  geom_boxplot(
-    aes(ymin = lci, lower = lqrt, middle = med, upper = uqrt, ymax = uci),
-    stat = "identity",
-    width = 0.5,       
-    alpha = 1,      
-    color = "black",   
-    size = 0.4         
-  ) +
-  facet_grid(rows = vars(Habitat), cols = vars(Breeding.Biome), scales = "fixed") +
-  
-  labs(
-    x = "",
-    y = "Relative change in AFV since 1970 (%)"
-  ) +
-  theme_minimal() +
-  theme(
-    panel.border = element_rect(color = "black", fill = NA, size = 0.6),
-    
-    panel.grid.major.y = element_line(color = "gray90"),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    
-    axis.text.x = element_blank(),
-    axis.text.y = element_text(color = "black", size = 14),
-    
-    axis.title = element_text(size = 16),
-    axis.title.y = element_text(margin = margin(r = 10)),
-    
-    strip.background = element_rect(fill = "gray95", color = NA),
-    strip.text = element_text(size = 14, face = "bold"),
-    strip.placement = "outside",
-    
-    legend.position = "none"
-  )
-
-png("output/Boxplot of AFV relative change distribution by habitat in each biome.png", width = 1800, height = 2400, res = 300)
-print(p_group_box)
-dev.off()
-
-pdf("output/Boxplot of AFV relative change distribution by habitat in each biome.pdf", width = 6, height = 8)
-print(p_group_box)
-dev.off()
 
 # ----- Percentages of each species' contribution to biome-level ttl AFV in 1970 and 2017--------
 
