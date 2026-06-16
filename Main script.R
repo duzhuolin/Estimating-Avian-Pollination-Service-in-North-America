@@ -615,9 +615,9 @@ jagsMod = jags(data = data.jags,
 
 ############################################ end MCMC sampling
 
-#save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
+save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))
@@ -721,7 +721,7 @@ biomlab$label_y[biomlab$Breeding.Biome == "Western Forest"] <- -43
 
 pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = Breeding.Biome,fill = Breeding.Biome),alpha = 0.2)+
-  geom_line(aes(colour = Breeding.Biome))+
+  geom_line(aes(colour = Breeding.Biome), linewidth = 1)+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   geom_label(
     data = biomlab, 
@@ -774,15 +774,18 @@ spcllab = spclpop[which(spclpop$year == 2017),]
 spcllab$label_x <- NA
 spcllab$label_y <- NA
 
-spcllab$label_x[spcllab$specialization_lvl == "specialized"] <- 2010
-spcllab$label_y[spcllab$specialization_lvl == "specialized"] <- -12
+spcllab$label_x[spcllab$specialization_lvl == "specialized hummingbirds"] <- 2015
+spcllab$label_y[spcllab$specialization_lvl == "specialized hummingbirds"] <- -50
 
-spcllab$label_x[spcllab$specialization_lvl == "generalized"] <- 2010
-spcllab$label_y[spcllab$specialization_lvl == "generalized"] <- -23
+spcllab$label_x[spcllab$specialization_lvl == "generalized hummingbirds"] <- 2010
+spcllab$label_y[spcllab$specialization_lvl == "generalized hummingbirds"] <- 27
+
+spcllab$label_x[spcllab$specialization_lvl == "generalized non-hummingbirds"] <- 2015
+spcllab$label_y[spcllab$specialization_lvl == "generalized non-hummingbirds"] <- -6
 
 pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
   geom_ribbon(aes(x = year,ymin = lci/1e6,ymax = uci/1e6,group = specialization_lvl,fill = specialization_lvl),alpha = 0.2)+
-  geom_line(aes(colour = specialization_lvl))+
+  geom_line(aes(colour = specialization_lvl), linewidth = 1)+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   geom_label(data = spcllab, aes(x = label_x, y = label_y, label = specialization_lvl, colour = specialization_lvl),
              fill = "white",
@@ -1075,6 +1078,10 @@ summarize_draws <- function(x) {
        med = as.numeric(quantile(x, 0.5)),
        lci = as.numeric(quantile(x, 0.025)),
        uci = as.numeric(quantile(x, 0.975)),
+       lci90 = as.numeric(quantile(x, 0.05)),
+       uci90 = as.numeric(quantile(x, 0.95)),
+       lci75 = as.numeric(quantile(x, 0.125)),
+       uci75 = as.numeric(quantile(x, 0.875)),
        lqrt = as.numeric(quantile(x, 0.25)),
        uqrt = as.numeric(quantile(x, 0.75)))
 }
@@ -1195,7 +1202,7 @@ fwrite(cont_summ,"output/Continental level N and AFV trajectories.csv")
 
 
 #continental AFV trajectory
-for(j in c("AFV_med","AFV_lci","AFV_uci")){
+for(j in c("AFV_med","AFV_lci","AFV_uci","AFV_lci90","AFV_uci90","AFV_lci75","AFV_uci75")){
   cont_summ[, (j) := get(j) / 1e9]
 }
 
@@ -1207,7 +1214,7 @@ pmain = ggplot(data = cont_summ,aes(x = year,y = AFV_med))+
   scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
-        panel.grid.minor = element_blank(), 
+        panel.grid.minor = element_blank(),
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
         axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
@@ -1273,7 +1280,7 @@ Change_trajectory <- function(dt, value_col, by_cols) {
   # Summarize per group x year
   summ <- x[, as.list(summarize_draws(rel_change)), by = c(by_cols, "year")]
   setnames(summ, old = names(summ)[!(names(summ) %in% c(by_cols, "year"))],
-           new = c("mean","sd","med","lci","uci","lqrt","uqrt"))
+           new = c("mean","sd","med","lci","uci","lci90","uci90","lci75","uci75","lqrt","uqrt"))
   summ
 }
 
@@ -1298,7 +1305,7 @@ combined_cont <- merge(cont_N_export, cont_AFV_export, by = c("year"))
 
 fwrite(combined_cont,"output/Continental level N and AFV loss trajectories.csv")
 
-for(qt in c("lci","uci","med","lqrt","uqrt")){
+for(qt in c("lci","uci","med","lqrt","uqrt","lci90","uci90","lci75","uci75")){
   cont_N[, (qt) := get(qt) / 1e6]
 }
 
@@ -1332,7 +1339,7 @@ png("output/Continental level change in avian pollinator population.png", width 
 print(pmain)
 dev.off()
 
-for(qt in c("lci","uci","med","lqrt","uqrt")){
+for(qt in c("lci","uci","med","lqrt","uqrt","lci90","uci90","lci75","uci75")){
   cont_AFV[, (qt) := get(qt) / 1e9]
 }
 
@@ -1402,7 +1409,7 @@ for (nm in names(group_draws)) {
   
   #-------------------------------------------------
   chg_AFV_level <- copy(chg_AFV)
-  for(qt1 in c("lci","uci","med","lqrt","uqrt")){
+  for(qt1 in c("lci","uci","med","lqrt","uqrt","lci90","uci90","lci75","uci75")){
     chg_AFV_level[, (qt1) := get(qt1) / 1e9]
   }
   
@@ -1410,7 +1417,7 @@ for (nm in names(group_draws)) {
   
   pmain = ggplot(data = chg_AFV_level,aes(x = year,y = med))+
     geom_ribbon(aes(x = year,ymin = lci,ymax = uci,group = level,fill = level),alpha = 0.2)+
-    geom_line(aes(colour = level))+
+    geom_line(aes(colour = level), linewidth = 1)+
     labs(x = "Year",y = "Change in AFV (Billions)")+
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
     scale_x_continuous(limits = c(1970, 2020), breaks = seq(1970, 2020, by=10), expand = expansion(mult = c(0, 0.05))) +
@@ -1459,7 +1466,7 @@ spafv$AFV_sort = factor(spafv$species,levels = spafvchg_2017_ord,ordered = T)
 
 spafv = spafv[order(spafv$AFV_sort,spafv$year),]
 
-for(j in c("AFV_med","AFV_lci","AFV_uci")){
+for(j in c("AFV_med","AFV_lci","AFV_uci","AFV_lci90","AFV_uci90","AFV_lci75","AFV_uci75")){
   spafv[, (j) := get(j) / 1e9]
 }
 
@@ -1528,9 +1535,9 @@ AFV_prop_loss <- function(dt, value_col, by_cols) {
   # Summarize the distribution of proportional loss
   summ <- x[, as.list(summarize_draws(p_loss)), by = c(by_cols)]
   # Rename columns
-  setnames(summ, 
-           old = c("mean", "sd", "med", "lci", "uci", "lqrt", "uqrt"),
-           new = c("plostmean", "plostsd", "plostmed", "plostlci", "plostuci", "plostlqrt", "plostuqrt"))
+  setnames(summ,
+           old = c("mean", "sd", "med", "lci", "uci", "lci90", "uci90", "lci75", "uci75", "lqrt", "uqrt"),
+           new = c("plostmean", "plostsd", "plostmed", "plostlci", "plostuci", "plostlci90", "plostuci90", "plostlci75", "plostuci75", "plostlqrt", "plostuqrt"))
   return(summ)
 }
 

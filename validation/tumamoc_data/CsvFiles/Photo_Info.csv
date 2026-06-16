@@ -1,0 +1,128 @@
+Order,StkPhNum,Date,Photographer,Time,Camera,LensType,FocalDist,LensNote,Azimuth,VertTilt,TiltDeg,CamHeight,BWNeg,ColorNeg,ColorPos,Filter,Digital
+1,375,3/8/1906,Spalding,10:30,reflex 4x5,Goerz,NA,5 M E of SE corner,NA,NA,NA,NA,NA,NA,NA,NA,0
+2,375,11/25/1928,Shreve,NA,NA,NA,NA,,NA,NA,NA,NA,NA,NA,NA,NA,0
+3,375,ca. 1960,Turner,NA,Crown Graphic,NA,135,,270,NA,NA,NA,2,0,0,NA,0
+4,375,ca. 1960,Turner,NA,Crown Graphic,NA,135,,270,NA,NA,NA,2,0,0,NA,0
+5,375,2/19/1968,Turner,NA,Graphic XL,NA,101,,NA,NA,NA,NA,4,0,0,NA,0
+6,375,2/19/1968,Turner,NA,Graphic XL,NA,101,,NA,NA,NA,NA,4,0,0,NA,0
+7,375,7/17/1975,Turner,10:50,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+8,375,7/17/1975,Turner,10:50,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+9,375,11/14/1988,Turner,9:30,Graphlex XL,NA,58,,280,up,2_0,1.45,2,0,0,NA,0
+10,375,11/14/1988,Turner,9:30,Graphlex XL,NA,58,,280,up,2_0,1.45,2,0,0,NA,0
+11,375,2/18/2010,Raichle,11:25,Horseman 45FA,NA,90,,276,down,0_20,1.335,2,1,1,none,0
+12,375,2/18/2010,Raichle,11:25,Horseman 45FA,NA,90,,276,down,0_20,1.335,2,1,1,none,0
+13,376,11/25/1928,Shreve,NA,NA,NA,NA,,NA,NA,NA,NA,6,0,0,NA,0
+14,376,ca. 1959,Dodge,NA,NA,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+15,376,2/19/1968,Turner,NA,NA,NA,105,,NA,NA,NA,NA,4,0,0,NA,0
+16,376,7/18/1975,Turner,11:15,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+17,376,12/19/1986,Turner,10:55,Graphlex XL,NA,58,,290,down,5_30,1.55,2,0,1,NA,0
+18,376,1/15/2010,Raichle,11:20,Horseman 45FA,NA,90,,286,down,5_0,1.495,2,1,1,none,0
+19,376,03/00/1906,Spalding,NA,reflex 4x5,Goerz,NA,10 m E of SE corner,NA,NA,NA,NA,1,0,0,NA,0
+20,376,2/19/1968,Turner,NA,NA,NA,105,,NA,NA,NA,NA,2,0,0,NA,0
+21,376,12/19/1986,Turner,11:25,Graphlex XL,NA,58,,285,up,0_15,1.56,2,0,1,NA,0
+22,376,2/18/2010,Raichle,10:30,Horseman 45FA,NA,90,,284,up,1_20,1.49,2,1,1,none,0
+23,377,3/8/1906,Spalding,10:00,reflex 4x5,Goerz,NA,2 m west of NW corner at stake E,NA,NA,NA,NA,NA,NA,NA,NA,0
+24,377,2/19/1968,Turner,13:30,Graphic XL,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+25,377,5/7/1999,Turner,NA,Horseman 45FA,NA,90,,137,down,1_30,1.54,2,0,0,yellow,0
+26,377,4/25/2010,Turner,14:30,Horseman 45FA,NA,90,,135,down,1_40,1.6,2,1,1,NA,0
+27,551,12/18/1968,Turner,11:30,Graphic XL,NA,101,,260,NA,NA,NA,1,0,0,NA,0
+28,551,1/15/1974,Turner,10:45,Graphic XL,NA,101,,260,NA,NA,NA,1,0,0,NA,0
+29,551,4/9/1978,Karpiscak,15:00,Graphic XL,NA,101,,253,up,0_27,1.2,2,0,0,NA,0
+30,551,4/14/2010,Turner,8:25,Crown Graphic 4x5,NA,90,,270,NA,0,1.6,2,1,1,none,0
+31,552,3/8/1906,Spalding,NA,reflex 4x5,Goerz,NA,3 m from SW corner,NA,NA,NA,NA,NA,NA,NA,NA,0
+32,552,2/3/1969,Turner,9:00,NA,NA,58,,10,NA,NA,NA,2,0,0,NA,0
+33,552,7/17/1975,Turner,10:30,Graphic XL,NA,100,,10,NA,NA,NA,1,0,0,NA,0
+34,552,2/21/1978,Turner,NA,Graphic XL,NA,100,,10,NA,NA,NA,2,0,0,NA,0
+35,552,11/18/1995,Turner,11:00,Horseman 45FA,NA,90,90 or 65 mm as FocalDist,NA,NA,NA,1.5,4,0,0,"yellow, sky 1-A",0
+36,552,4/12/2010,Turner,11:20,Crown Graphic 4x5,NA,90,,28,down,10_10,1.46,2,1,1,none,0
+37,732,00/00/1959,Dodge,NA,NA,NA,NA,,NA,NA,NA,NA,1,0,0,NA,0
+38,732,2/19/1968,Turner,NA,Graphic XL,NA,NA,,NA,NA,NA,NA,4,0,0,NA,0
+39,732,8/14/1975,Turner,14:35,Graphic XL,NA,58,,NA,NA,NA,NA,2,0,0,NA,0
+40,732,8/28/1975,Turner,13:00,Graphic XL,NA,58,,NA,NA,NA,NA,2,0,0,NA,0
+41,732,4/15/2010,Turner,15:30,Crown Graphic 4x5,NA,90,,75,up,10_0,1.43,2,0,1,none,0
+42,760,03/00/1906,Spalding,10:30,reflex 4x5,Goerz,NA,0.5 m from W line looking nearly NE,NA,NA,NA,NA,1,0,0,NA,0
+43,760,7/17/1975,Turner,13:40,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+44,760,7/18/1975,Turner,12:05,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+45,760,4/13/2010,Turner,8:17,Canon EOS Digital Rebel,NA,135,,20,up,4_10,1.38,0,0,0,none,1
+46,761,1958 or 59,Turner,NA,NA,NA,NA,,NA,NA,NA,NA,1,0,0,NA,0
+47,761,7/18/1975,Turner,9:45,Graphic XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+48,761,4/13/2010,Turner,9:22,Crown Graphic 4x5,NA,90,,310,down,26_30,1.48,2,1,1,none,0
+49,904,3/10/1906,Spalding,NA,reflex 4x5,Goerz,NA,3 m E of E line looking nearly W,NA,NA,NA,NA,NA,NA,NA,NA,0
+50,904,1/9/1978,Turner,NA,Graphic XL,NA,100,,275,NA,NA,NA,2,0,0,NA,0
+51,904,4/13/2010,Turner,13:00,Crown Graphic 4x5,NA,90,,275,down,1_30,1.5,1,1,1,yellow,0
+52,904,1/9/1978,Turner,NA,Graphic XL,NA,100,,NA,NA,NA,NA,2,0,0,NA,0
+53,904,4/13/2010,Turner,1:20,Crown Graphic 4x5,NA,90,,140,down,1_20,1.66,2,1,1,none,0
+54,907,7/24/1958,Turner,NA,Crown Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+55,907,4/22/1978,Karpiscak,13:10,Graphic XL 2x3,NA,58,,NA,down,6_18,1.2,2,0,0,NA,0
+56,907,11/26/1986,Turner,11:12,Graphlex XL,NA,58,,NA,down,10_35,1.53,2,0,0,NA,0
+57,907,12/4/2009,Raichle,11:30,Horseman 45FA,NA,135,,305,down,5_0,1.36,2,1,1,none,0
+58,907,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+59,907,4/22/1978,Karpiscak,13:40,Graphic XL 2x3,NA,58,,NA,down,8_46,1.2,2,0,0,NA,0
+60,907,11/26/1986,Turner,11:32,Graphlex XL,NA,58,,NA,down,10_40,1.53,2,0,0,NA,0
+61,907,12/4/2009,Raichle,11:45,Horseman 45FA,NA,135,,338,down,5_30,1.36,2,1,1,none,0
+62,908,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+63,908,4/22/1978,Karpiscak,14:00,Graphlex XL,NA,58,,NA,down,3_36,1.2,2,0,0,NA,0
+64,908,12/1/1986,Turner,10:20,Graplex XL,NA,58,,67,down,3_20,1.53,2,0,0,NA,0
+65,908,12/4/2009,Raichle,13:25,Horseman 45FA,NA,135,,72,up,1_30,1.365,2,1,1,yellow,0
+66,908,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+67,908,4/14/1978,Karpiscak,15:55,Graphlex XL,NA,58,,NA,NA,NA,NA,1,0,0,NA,0
+68,908,4/22/1978,Karpiscak,14:15,Graphlex XL,NA,58,,NA,down,2_42,1.2,1,0,0,NA,0
+69,908,12/1/1986,Turner,10:10,Graphlex XL,NA,58,,41,NA,NA,1.53,2,0,0,NA,0
+70,908,12/4/2009,Raichle,13:00,Horseman 45FA,NA,135,,45,down,1_0,1.365,2,1,1,yellow,0
+71,909,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+72,909,4/24/1978,Karpiscak,11:55,Graphlex XL,NA,58,,NA,down,2_42,1.2,2,0,0,NA,0
+73,909,12/22/1986,Turner,13:15,Graphlex XL,NA,58,,190,down,10_45,1.57,2,0,0,NA,0
+74,909,1/4/2010,Turner,10:20,Horseman 45FA,NA,135,,200,down,5_30,1.66,2,1,1,none,0
+75,909,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+76,909,4/24/1978,Karpiscak,12:10,Graphlex XL,NA,58,,NA,down,2_15,1.2,3,0,0,NA,0
+77,909,12/22/1986,Turner,13:30,Graphlex XL,NA,58,,170,down,6_45,1.57,2,0,0,NA,0
+78,909,1/4/2010,Turner,10:45,Horseman 45FA,NA,135,,165,down,2_0,1.66,2,1,1,none,0
+79,910,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+80,910,4/22/1978,Karpiscak,14:40,Graphlex XL,NA,58,,NA,down,0_54,NA,2,0,0,NA,0
+81,910,12/12/1986,Turner,15:25,Graphlex XL,NA,58,,130,down,1_40,1.61,2,0,0,NA,0
+82,910,1/4/2010,Turner,11:20,Horseman 45FA,NA,135,,133,down,0_30,1.66,2,1,1,none,0
+83,911,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,1,0,0,NA,0
+84,911,4/22/1978,Karpiscak,16:40,Graphlex XL,NA,58,,NA,down,4_30,NA,2,0,0,NA,0
+85,911,12/22/1986,Turner,14:00,Graphlex XL,NA,58,,130,down,6_25,1.57,2,0,0,NA,0
+86,911,12/15/2009,Raichle,11:05,Horseman 45FA,NA,90,,125,down,7_40,1.46,2,1,1,none,0
+87,911,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+88,911,4/22/1978,Karpiscak,16:50,Graphlex XL,NA,58,,NA,down,3_22,1.2,2,0,0,NA,0
+89,911,12/22/1986,Turner,14:15,Graphlex XL,NA,58,,155,down,4_15,1.51,2,0,0,NA,0
+90,911,12/20/2009,Turner,11:20,Horseman 45FA,NA,90,,153,down,6_0,1.33,2,1,1,none,0
+91,911,4/24/1978,Karpiscak,13:00,Graphlex XL,NA,58,,NA,down,4_57,1.2,2,0,0,NA,0
+92,911,12/22/1986,Turner,14:00,Graphlex XL,NA,58,,125,down,10_30,1.57,2,0,0,NA,0
+93,911,12/20/2009,Turner,12:00,Horseman 45FA,NA,90,,124,down,6_35,1.46,2,1,1,none,0
+94,911,4/24/1978,Karpiscak,13:20,Graphlex XL,NA,58,,NA,down,2_42,1.2,2,0,0,NA,0
+95,911,12/20/2009,Turner,12:20,Horseman 45FA,NA,90,,155,down,6_10,1.455,2,1,1,none,0
+96,912,7/11/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,3,0,0,NA,0
+97,912,4/22/1978,Karpiscak,16:30,Graphlex XL,NA,58,,NA,down,4_57,1.5,2,0,0,NA,0
+98,912,12/22/1986,Turner,14:55,Graphlex XL,NA,58,,125,down,7_5,1.58,2,0,0,NA,0
+99,912,4/6/1987,Turner,9:38,Graphlex XL,NA,58,,128,down,9_45,1.565,2,0,0,NA,0
+100,912,12/20/2009,Turner,12:50,Horseman 45FA,NA,90,,130,down,6_20,1.4,2,1,1,none,0
+101,913,7/11/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,3,0,0,NA,0
+102,913,4/22/1978,Karpiscak,17:15,Graphlex XL,NA,58,,NA,down,7_12,1.5,2,0,0,NA,0
+103,913,12/12/1986,Turner,14:50,Graphlex XL,NA,58,,136,down,9_20,1.53,2,0,0,NA,0
+104,913,1/4/2010,Turner,11:50,Horseman 45FA,NA,135,,140,down,7_0,1.64,2,1,1,none,0
+105,914,7/11/1958,Turner,NA,Graphic XL,NA,NA,,NA,NA,NA,NA,4,0,0,NA,0
+106,914,4/24/1978,Karpiscak,13:35,Graphlex XL,NA,58,,NA,down,0_27,1.2,2,0,0,NA,0
+107,914,12/1/1986,Turner,11:00,Graphlex XL,NA,58,,180,down,2_0,1.53,3,0,0,NA,0
+108,914,1/11/2010,Raichle,10:55,Horseman 45FA,NA,90,,180,down,0_50,1.5,2,1,1,none,0
+109,915,4/22/1978,Karpiscak,15:55,Graphlex XL,NA,58,,NA,down,2_1,1.2,2,0,0,NA,0
+110,915,12/22/1986,Turner,12:01,Graphlex XL,NA,58,,190,down,7_30,1.565,1,0,0,NA,0
+111,915,1/11/2010,Raichle,11:45,Horseman 45FA,NA,90,,190,down,5_50,1.5,2,1,1,none,0
+112,915,7/24/1958,Turner,NA,Graphic 4x5,NA,NA,,NA,NA,NA,NA,2,0,0,NA,0
+113,915,4/22/1978,Karpiscak,15:55,Graphic XL,NA,58,,NA,down,2_1,1.2,1,0,0,NA,0
+114,915,12/22/1986,Turner,12:32,Graphic XL,NA,58,,170,down,4_45,1.575,2,0,0,NA,0
+115,915,1/11/2010,Raichle,12:12,Horseman 45FA,NA,90,,165,down,3_30,1.5,2,1,1,none,0
+116,915,4/22/1978,Karpiscak,NA,Graphlex XL,NA,58,,NA,NA,NA,NA,2,0,0,NA,0
+117,915,4/6/1987,Turner,10:05,Graphlex XL,NA,58,,163,down,2_45,1.57,2,0,0,NA,0
+118,915,1/11/2010,Raichle,12:30,Horseman 45FA,NA,90,,157,down,2_0,1.5,2,1,1,none,0
+119,4965,4/7/1962,Turner,NA,NA,NA,NA,,NA,NA,NA,NA,1,0,0,NA,0
+120,4965,4/12/2010,Turner,10:08,Crown Graphic 4x5,NA,135,,330,down,2_0,1.56,2,1,1,none,0
+121,4966,4/13/2010,Turner,10:12,Crown Graphic 4x5,NA,90,,210,down,5_20,1.52,1,1,1,none,0
+122,4967,4/13/2010,Turner,12:07,Crown Graphic 4x5,NA,90,,5,down,30_0,1.49,2,1,1,yellow,0
+123,D,3/8/1906,Spalding,10:00,reflex 4x5,Goerz,NA,2 m south of SW corner,NA,NA,NA,NA,NA,NA,NA,NA,0
+124,B,3/9/1906,Spalding,11:00,reflex 4x5,Goerz,NA,"2 m from S line, looking W of N.",NA,NA,NA,NA,NA,NA,NA,NA,0
+125,C,3/2/1906,Spalding,11:40,reflex 4x5,Goerz,NA,3 M from W line,NA,NA,NA,NA,NA,NA,NA,NA,0
+127,NA,3/8/1906,Spalding,9:40,reflex 4x5,Goerz,NA,info for 2 photos: 1) lens at 3 m from S line taken at 9:40. 2) lens at 5 m S of S line taken at 11:35,NA,NA,NA,NA,NA,NA,NA,NA,0
+128,A,3/9/1906,Spalding,10:45,reflex 4x5,Goerz,NA,3 m from S line looking nearly N,NA,NA,NA,NA,NA,NA,NA,NA,0
