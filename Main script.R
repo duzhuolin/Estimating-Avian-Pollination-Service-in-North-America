@@ -615,9 +615,9 @@ jagsMod = jags(data = data.jags,
 
 ############################################ end MCMC sampling
 
-save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
+#save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))
@@ -1343,8 +1343,21 @@ for(qt in c("lci","uci","med","lqrt","uqrt","lci90","uci90","lci75","uci75")){
   cont_AFV[, (qt) := get(qt) / 1e9]
 }
 
+# Compute nadir year per draw
+cont[, AFV_change := (annual.FV - annual.FV[year == 1970]), by = draw]
+nadir_hist <- cont[, .(nadir_yr = year[which.min(AFV_change)]), by = draw][, .(count = .N), by = nadir_yr]
+
+y_bottom <- min(cont_AFV$lci)
+y_range  <- diff(range(c(cont_AFV$lci, cont_AFV$uci)))
+nadir_hist[, y0 := y_bottom - y_range * 0.02]
+nadir_hist[, y1 := y0 + (count / max(count)) * y_range * 0.10]
+
 pmain = ggplot(data = cont_AFV, aes(x = year, y = med)) +
   geom_ribbon(aes(x = year, ymin = lci, ymax = uci), alpha = 0.2, fill = "#31688EFF") +
+  geom_segment(data = nadir_hist,
+               aes(x = nadir_yr, xend = nadir_yr, y = y0, yend = y1),
+               color = "#440154FF", alpha = 0.8, linewidth = 0.6,
+               inherit.aes = FALSE) +
   geom_line(color = "#440154FF", linewidth = 1) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   labs(
