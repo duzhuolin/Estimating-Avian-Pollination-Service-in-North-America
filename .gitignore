@@ -4,4 +4,4 @@
 .Ruserdata
 *output*/
 *.geojson
-validation
+validation/
