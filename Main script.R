@@ -212,6 +212,7 @@ splist3 = merge(splist,popest,by.x = "species",by.y = "species")
 #adding taxa (order) and specialization level to splist3
 match_idx <- match(splist3$species, pollinators$species)
 splist3$specialization_lvl <- pollinators$specialization_lvl[match_idx]
+splist3$migratory_behavior <- pollinators$migratory_behavior[match_idx]
 splist3$Order <- pollinators$Order[match_idx]
 
 splist3$spfactor <- factor(splist3$species,
@@ -1049,15 +1050,20 @@ write.csv(indices,"output/Avian pollinator original data.csv")
 #extract posterior distribution of N of each species in each year
 
 N_mat <- MCMCchains(jagsMod$samples, params = "N")
-
 N_dt <- as.data.table(N_mat)
 N_dt[, draw := .I]
 N_long <- melt(N_dt, id.vars = "draw", variable.name = "node", value.name = "N_draw")
 
-idx <- str_match(N_long$node, "^N\\[(\\d+),(\\d+)\\]$")
-N_long[, species_idx := as.integer(idx[,2])]
-N_long[, year_idx    := as.integer(idx[,3])]
+node_map <- unique(N_long[, .(node)])
+node_map[, c("species_idx", "year_idx") := tstrsplit(
+  gsub("^N\\[|\\]$", "", node), ",", fixed = TRUE, type.convert = TRUE
+)]
+
+# Merge back by node
+N_long <- merge(N_long, node_map, by = "node")
 N_long[, node := NULL]
+rm(node_map)
+gc()
 
 species_vec <- splist$spfactor #Species in alphabetical order
 years_vec <- 1970:2017
@@ -1841,6 +1847,102 @@ dev.off()
 pdf("output/Histogram of species-level relative change in AFV 1970 to 2017.pdf", 
     width = 6, height = 8)
 print(p_rel)
+dev.off()
+
+# ------ Bubble chart: AFV relative change by specialization x migratory behavior (hummingbirds only) ------
+
+sp_rel_mig <- merge(sp_rel_summ,
+                    splist3[, c("species", "specialization_lvl", "migratory_behavior")],
+                    by = "species", all.x = TRUE)
+
+# Filter to hummingbirds only (migratory_behavior is assigned only for hummingbirds)
+sp_rel_hb <- sp_rel_mig[migratory_behavior != "" & !is.na(migratory_behavior), ]
+
+# Order migratory behavior from shortest to longest migration
+sp_rel_hb[, migratory_behavior := factor(migratory_behavior,
+  levels = c("S2S", "S", "M", "M2L", "L"),
+  ordered = TRUE)]
+
+# Shorten species labels for cleaner display
+sp_rel_hb[, label := gsub(" Hummingbird", "", species)]
+
+# Colors matching existing manuscript palette
+bubble_colors <- c("Increase" = "#56B4E9", "Decrease" = "#E69F00")
+
+# Pre-compute segment colour: only Calliope gets a visible line
+sp_rel_hb[, seg_clr := fifelse(species == "Calliope Hummingbird", "black", NA_character_)]
+
+p_bubble <- ggplot(sp_rel_hb, aes(x = specialization_lvl, y = migratory_behavior)) +
+  geom_point(aes(size = abs(med), fill = change_type),
+             shape = 21, stroke = 0.4, color = "black", alpha = 0.85) +
+  # Single geom_text_repel: all 8 species repel each other; segment.colour = NA suppresses line
+  geom_text_repel(
+    aes(label = label, segment.colour = seg_clr),
+    size = 5.5, fontface = "italic",
+    point.padding = 0.8, box.padding = 1,
+    min.segment.length = 0, segment.size = 1.0,
+    max.overlaps = 20, direction = "both"
+  ) +
+  scale_colour_identity() +
+  scale_fill_manual(values = bubble_colors, name = "Direction") +
+  scale_size_continuous(
+    name = "AFV relative change",
+    range = c(4, 14),
+    breaks = c(10, 50, 100, 200),
+    labels = c("10%", "50%", "100%", "200%"),
+    limits = c(10, 200) 
+  ) +
+  scale_x_discrete(
+    labels = c("generalized hummingbirds" = "Generalized",
+               "specialized hummingbirds"  = "Specialized"),
+    expand = expansion(add = 0.6)
+  ) +
+  scale_y_discrete(
+    labels = c("S2S" = "Sedentary to\nshort-distance",
+               "S"   = "Short-distance",
+               "M"   = "Medium-distance",
+               "M2L" = "Medium to\nlong-distance",
+               "L"   = "Long-distance"),
+    drop = FALSE,
+    expand = expansion(add = 0.6)
+  ) +
+  labs(
+    x = "Ecological specialization",
+    y = "Migratory behavior"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title       = element_text(size = 15),
+    legend.text        = element_text(size = 15, color = "black"),
+    legend.key.size    = unit(1.0, "cm"),
+    legend.key.height  = unit(0.6, "cm"),
+    legend.spacing.y   = unit(0.3, "cm"),
+    legend.position    = "right",
+    panel.grid.major   = element_line(color = "gray90", linewidth = 0.2),
+    panel.grid.minor   = element_blank(),
+    axis.line.x        = element_line(color = "black", linewidth = 0.6),
+    axis.line.y        = element_line(color = "black", linewidth = 0.6),
+    axis.ticks         = element_line(color = "black", linewidth = 0.6),
+    axis.ticks.length  = unit(0.2, "cm"),
+    axis.text.x        = element_text(color = "black", size = 18, margin = margin(t = 5)),
+    axis.text.y        = element_text(color = "black", size = 18, margin = margin(r = 5)),
+    axis.title         = element_text(size = 25),
+    axis.title.x       = element_text(margin = margin(t = 10)),
+    axis.title.y       = element_text(margin = margin(r = 10)),
+    plot.margin        = margin(12, 12, 12, 12)
+  ) +
+  guides(
+    fill = guide_legend(override.aes = list(size = 6), order = 1),
+    size = guide_legend(order = 2, nrow = 4, byrow = TRUE)
+  )
+
+png("output/Specialization_Migration_AFV_bubble.png",
+    width = 3200, height = 2000, res = 300)
+print(p_bubble)
+dev.off()
+pdf("output/Specialization_Migration_AFV_bubble.pdf",
+    width = 8, height = 5)
+print(p_bubble)
 dev.off()
 
 # --------------- Histogram of species-level absolute change in AFV 1970 to 2017 by biome ------------------------
