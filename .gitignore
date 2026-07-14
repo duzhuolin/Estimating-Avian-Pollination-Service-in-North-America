@@ -4,4 +4,5 @@
 .Ruserdata
 *output*/
 *.geojson
+models/Rosenberg et al model - uniform prior.txt
 validation/
