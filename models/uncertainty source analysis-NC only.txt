@@ -18,8 +18,8 @@ for (i in seq_len(nrow(pol_param))) {
   FMR <- r$FMR_pred_a*ms^r$FMR_pred_b
   
   # no variance in FN and FNE
-  FN  <- rep(r$FN_mean, N_FVR_DRAWS)
-  FNE <- rep(r$FNE_mean, N_FVR_DRAWS)
+  FN  <- rep((r$FN_min + r$FN_max) / 2, N_FVR_DRAWS)
+  FNE <- rep((r$FNE_min + r$FNE_max) / 2, N_FVR_DRAWS)
 
   # assuming NC follows log-normal dist
   NC <- rlnorm(N_FVR_DRAWS, r$NC_mean_ln, r$NC_sd_ln)

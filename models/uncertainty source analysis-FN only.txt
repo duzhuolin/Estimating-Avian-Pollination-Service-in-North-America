@@ -17,11 +17,11 @@ for (i in seq_len(nrow(pol_param))) {
   if (r$FMR_pred_a <= 0) stop("FMR_pred_a must be > 0") 
   FMR <- r$FMR_pred_a*ms^r$FMR_pred_b
   
-    # assuming FN follows uniform dist
-    FN  <- runif(N_FVR_DRAWS, r$FN_min,  r$FN_max)
+  # assuming FN follows uniform dist
+  FN  <- runif(N_FVR_DRAWS, r$FN_min,  r$FN_max)
 
   # no variance in FNE
-  FNE <- rep(r$FNE_mean, N_FVR_DRAWS)
+  FNE <- rep((r$FNE_min + r$FNE_max) / 2, N_FVR_DRAWS)
 
   # no variance in NC and NV
   NV <- rep(exp(r$NV_mean_ln), N_FVR_DRAWS)

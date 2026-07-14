@@ -18,7 +18,7 @@ for (i in seq_len(nrow(pol_param))) {
   FMR <- r$FMR_pred_a*ms^r$FMR_pred_b
   
   # no variance in FN
-  FN  <- rep(r$FN_mean, N_FVR_DRAWS)
+  FN  <- rep((r$FN_min + r$FN_max) / 2, N_FVR_DRAWS)
 
   # assuming FNE follows uniform dist
   FNE <- runif(N_FVR_DRAWS, r$FNE_min,  r$FNE_max)
