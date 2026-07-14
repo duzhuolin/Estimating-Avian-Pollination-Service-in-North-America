@@ -8,7 +8,10 @@ for (i in seq_len(nrow(pol_param))) {
   r <- pol_param[i,]
   
   # no variance in body mass
-  ms <- rep(r$mass_mean, N_FVR_DRAWS)
+  ms <- TruncatedNormal::qtnorm(0.5, 
+                                r$mass_mean, 
+                                mass.sd * r$mass_mean, 
+                                lb = 1, ub = Inf)
   
   # no variance in FMR equation
   if (r$FMR_pred_a <= 0) stop("FMR_pred_a must be > 0") 
