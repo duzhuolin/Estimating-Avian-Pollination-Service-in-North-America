@@ -19,14 +19,6 @@ base.yr = 1970
 end.yr = 2017
 popsource = "Pop.source"
 
-fig_palette <- c("#0072B2",  # blue — generalized hummingbirds
-                 "#D55E00",  # vermillion — specialized hummingbirds
-                 "#009E73",  # bluish green — generalized non-hummingbirds
-                 "#E69F00",  # orange
-                 "#CC79A7",  # reddish purple
-                 "#F0E442",  # yellow
-                 "#999999")  # grey
-
 set.seed(2019)
 
 pollinators = read.csv("input/avian nectarivore data for computing FVR.csv",
@@ -616,9 +608,9 @@ jagsMod = jags(data = data.jags,
 
 ############################################ end MCMC sampling
 
-#save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
+save.image(file = "temp_output/Full_Project_Snapshot_after_MCMC.RData") #save the entire working environment
 
-load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
+#load("temp_output/Full_Project_Snapshot_after_MCMC.RData")
 
 q90 = function(x){
   quantile(x,probs = c(0.025,0.25,0.75,0.975))
@@ -694,6 +686,10 @@ for(j in c("plostlci","plostmed","plostuci")){
 }
 
 
+fig_palette <- c("#D55E00",  # vermillion
+                 "#56B4E9",  # sky blue
+                 "#009E73")  # bluish green
+
 
 #### biome summaries
 
@@ -736,11 +732,11 @@ pmain = ggplot(data = biomepop,aes(x = year,y = med/1e6))+
   labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
   scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_manual(values = fig_palette) + 
+  scale_fill_manual(values = fig_palette) +
   scale_color_manual(values = fig_palette)+
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
-        panel.grid.minor = element_blank(), 
+        panel.grid.minor = element_blank(),
         axis.line.x = element_line(color = "black", linewidth = 0.6),
         axis.line.y = element_line(color = "black", linewidth = 0.6),
         axis.text.x = element_text(color = "black", size = 25, margin = margin(t = 5)),
@@ -760,6 +756,10 @@ dev.off()
 
 
 #### specialization level summaries
+
+spec_palette <- c("#E69F00",  # orange
+                  "#0072B2",  # dark blue
+                  "#CC79A7")  # reddish-purple
 
 spclpop = expand.grid(spcl = 1:nords,
                       yrs = 1:nyears)
@@ -790,14 +790,14 @@ pmain = ggplot(data = spclpop,aes(x = year,y = med/1e6))+
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
   geom_label(data = spcllab, aes(x = label_x, y = label_y, label = specialization_lvl, colour = specialization_lvl),
              fill = "white",
-             label.size = NA,  
-             hjust = 1,        
+             label.size = NA,
+             hjust = 1,
              size = 9) +
   labs(x = "Year",y = "Change in no. of avian nectarivores (Millions)")+
   scale_x_continuous(limits = c(1970, 2020), expand = expansion(mult = c(0, 0.05))) +
   scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-  scale_fill_manual(values = fig_palette) + 
-  scale_color_manual(values = fig_palette)+
+  scale_fill_manual(values = spec_palette) +
+  scale_color_manual(values = spec_palette)+
   theme_minimal()+
   theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
         panel.grid.minor = element_blank(), 
@@ -1434,6 +1434,8 @@ for (nm in names(group_draws)) {
   
   label_dt1 <- chg_AFV_level[year == 2010]
   
+  plt_palette <- if (nm == "specialization_lvl") spec_palette else fig_palette
+
   pmain = ggplot(data = chg_AFV_level,aes(x = year,y = med))+
     geom_ribbon(aes(x = year,ymin = lci,ymax = uci,group = level,fill = level),alpha = 0.2)+
     geom_line(aes(colour = level), linewidth = 1)+
@@ -1441,8 +1443,8 @@ for (nm in names(group_draws)) {
     geom_hline(yintercept = 0, linetype = "dashed", color = "gray50", linewidth = 0.6) +
     scale_x_continuous(limits = c(1970, 2020), breaks = seq(1970, 2020, by=10), expand = expansion(mult = c(0, 0.05))) +
     scale_y_continuous(breaks = pretty, expand = c(0, 0.5)) +
-    scale_fill_manual(values = fig_palette) + 
-    scale_color_manual(values = fig_palette)+
+    scale_fill_manual(values = plt_palette) +
+    scale_color_manual(values = plt_palette)+
     theme_minimal()+
     theme(legend.position = "none", panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
           panel.grid.minor = element_blank(), 
@@ -1849,101 +1851,6 @@ pdf("output/Histogram of species-level relative change in AFV 1970 to 2017.pdf",
 print(p_rel)
 dev.off()
 
-# ------ Bubble chart: AFV relative change by specialization x migratory behavior (hummingbirds only) ------
-
-sp_rel_mig <- merge(sp_rel_summ,
-                    splist3[, c("species", "specialization_lvl", "migratory_behavior")],
-                    by = "species", all.x = TRUE)
-
-# Filter to hummingbirds only (migratory_behavior is assigned only for hummingbirds)
-sp_rel_hb <- sp_rel_mig[migratory_behavior != "" & !is.na(migratory_behavior), ]
-
-# Order migratory behavior from shortest to longest migration
-sp_rel_hb[, migratory_behavior := factor(migratory_behavior,
-  levels = c("S2S", "S", "M", "M2L", "L"),
-  ordered = TRUE)]
-
-# Shorten species labels for cleaner display
-sp_rel_hb[, label := gsub(" Hummingbird", "", species)]
-
-# Colors matching existing manuscript palette
-bubble_colors <- c("Increase" = "#56B4E9", "Decrease" = "#E69F00")
-
-# Pre-compute segment colour: only Calliope gets a visible line
-sp_rel_hb[, seg_clr := fifelse(species == "Calliope Hummingbird", "black", NA_character_)]
-
-p_bubble <- ggplot(sp_rel_hb, aes(x = specialization_lvl, y = migratory_behavior)) +
-  geom_point(aes(size = abs(med), fill = change_type),
-             shape = 21, stroke = 0.4, color = "black", alpha = 0.85) +
-  # Single geom_text_repel: all 8 species repel each other; segment.colour = NA suppresses line
-  geom_text_repel(
-    aes(label = label, segment.colour = seg_clr),
-    size = 5.5, fontface = "italic",
-    point.padding = 0.8, box.padding = 1,
-    min.segment.length = 0, segment.size = 1.0,
-    max.overlaps = 20, direction = "both"
-  ) +
-  scale_colour_identity() +
-  scale_fill_manual(values = bubble_colors, name = "Direction") +
-  scale_size_continuous(
-    name = "AFV relative change",
-    range = c(4, 14),
-    breaks = c(10, 50, 100, 200),
-    labels = c("10%", "50%", "100%", "200%"),
-    limits = c(10, 200) 
-  ) +
-  scale_x_discrete(
-    labels = c("generalized hummingbirds" = "Generalized",
-               "specialized hummingbirds"  = "Specialized"),
-    expand = expansion(add = 0.6)
-  ) +
-  scale_y_discrete(
-    labels = c("S2S" = "Sedentary to\nshort-distance",
-               "S"   = "Short-distance",
-               "M"   = "Medium-distance",
-               "M2L" = "Medium to\nlong-distance",
-               "L"   = "Long-distance"),
-    drop = FALSE,
-    expand = expansion(add = 0.6)
-  ) +
-  labs(
-    x = "Ecological specialization",
-    y = "Migratory behavior"
-  ) +
-  theme_minimal() +
-  theme(
-    legend.title       = element_text(size = 15),
-    legend.text        = element_text(size = 15, color = "black"),
-    legend.key.size    = unit(1.0, "cm"),
-    legend.key.height  = unit(0.6, "cm"),
-    legend.spacing.y   = unit(0.3, "cm"),
-    legend.position    = "right",
-    panel.grid.major   = element_line(color = "gray90", linewidth = 0.2),
-    panel.grid.minor   = element_blank(),
-    axis.line.x        = element_line(color = "black", linewidth = 0.6),
-    axis.line.y        = element_line(color = "black", linewidth = 0.6),
-    axis.ticks         = element_line(color = "black", linewidth = 0.6),
-    axis.ticks.length  = unit(0.2, "cm"),
-    axis.text.x        = element_text(color = "black", size = 18, margin = margin(t = 5)),
-    axis.text.y        = element_text(color = "black", size = 18, margin = margin(r = 5)),
-    axis.title         = element_text(size = 25),
-    axis.title.x       = element_text(margin = margin(t = 10)),
-    axis.title.y       = element_text(margin = margin(r = 10)),
-    plot.margin        = margin(12, 12, 12, 12)
-  ) +
-  guides(
-    fill = guide_legend(override.aes = list(size = 6), order = 1),
-    size = guide_legend(order = 2, nrow = 4, byrow = TRUE)
-  )
-
-png("output/Specialization_Migration_AFV_bubble.png",
-    width = 3200, height = 2000, res = 300)
-print(p_bubble)
-dev.off()
-pdf("output/Specialization_Migration_AFV_bubble.pdf",
-    width = 8, height = 5)
-print(p_bubble)
-dev.off()
 
 # --------------- Histogram of species-level absolute change in AFV 1970 to 2017 by biome ------------------------
 
@@ -1963,14 +1870,11 @@ for(qt in c("lci","uci","med")){
 sp_abs_summ_biome <- sp_abs_summ[order(Breeding.Biome, med)]
 sp_abs_summ_biome$species <- factor(sp_abs_summ_biome$species, levels = sp_abs_summ_biome$species)
 
-# Biome-level AFV summary for facet strip labels
-biome_afv_lab <- sp_abs_summ[, .(
-  med = round(sum(med), 0),
-  lci = round(sum(lci), 0),
-  uci = round(sum(uci), 0)
-), by = Breeding.Biome]
-biome_afv_lab[, label := paste0(Breeding.Biome, "\n", med, " [", lci, ", ", uci, "]")]
-biome_labels <- setNames(biome_afv_lab$label, biome_afv_lab$Breeding.Biome)
+# Biome-level AFV net change for facet strip labels
+biome_afv <- afvsout[grepl("breedingbiome", afvsout$node), ]
+biome_afv$label <- paste0(biome_afv$Group, "\n",
+                           biome_afv$med, " [", biome_afv$lci, " : ", biome_afv$uci, "]")
+biome_labels <- setNames(biome_afv$label, biome_afv$Group)
 
 color_palette <- c("Decrease" = "#E69F00", "Increase" = "#56B4E9")
 
@@ -2004,18 +1908,20 @@ p_abs <- ggplot(sp_abs_summ_biome, aes(x = med, y = species, fill = change_type)
         axis.text.y = element_blank(),
         axis.title = element_text(size = 16),
         axis.title.x = element_text(margin = margin(t = 10)),
-        strip.text.y.left = element_text(angle = 0, face = "bold", hjust = 1, size = 14,
-                                          margin = margin(r = 10)),
-        strip.placement = "outside", 
-        panel.spacing = unit(1, "lines") 
-  )
+        strip.text.y.left = element_text(angle = 0, face = "bold", hjust = 0.5, size = 14,
+                                          margin = margin(r = 30)),
+        strip.placement = "outside",
+        panel.spacing = unit(1, "lines"),
+        plot.margin = margin(5, 10, 5, 10, "pt")
+  ) +
+  coord_cartesian(clip = "off")
 
 png("output/Histogram of species-level absolute change in AFV 1970 to 2017 by biome.png", 
-    width = 2200, height = 2200, res = 300)
+    width = 2400, height = 2200, res = 300)
 print(p_abs)
 dev.off()
 pdf("output/Histogram of species-level absolute change in AFV 1970 to 2017 by biome.pdf", 
-    width = 8, height = 8)
+    width = 9, height = 8)
 print(p_abs)
 dev.off()
 
@@ -2099,6 +2005,104 @@ for (i in seq_along(biomes_list)) {
 
 mtext("Species-level contribution to total AFV within each breeding biome (%)", side = 1, line = 1.2, outer = TRUE, cex = 2)
 
+dev.off()
+
+
+# ------ Bubble chart: AFV relative change by specialization x migratory behavior (hummingbirds only) ------
+
+sp_rel_mig <- merge(sp_rel_summ,
+                    splist3[, c("species", "specialization_lvl", "migratory_behavior")],
+                    by = "species", all.x = TRUE)
+
+# Filter to hummingbirds only (migratory_behavior is assigned only for hummingbirds)
+sp_rel_hb <- sp_rel_mig[migratory_behavior != "" & !is.na(migratory_behavior), ]
+
+# Order migratory behavior from shortest to longest migration
+sp_rel_hb[, migratory_behavior := factor(migratory_behavior,
+                                         levels = c("S2S", "S", "M", "M2L", "L"),
+                                         ordered = TRUE)]
+
+# Shorten species labels for cleaner display
+sp_rel_hb[, label := gsub(" Hummingbird", "", species)]
+
+# Colors matching existing manuscript palette
+bubble_colors <- c("Increase" = "#56B4E9", "Decrease" = "#E69F00")
+
+# Pre-compute segment colour: only Calliope gets a visible line
+sp_rel_hb[, seg_clr := fifelse(species == "Calliope Hummingbird", "black", NA_character_)]
+
+p_bubble <- ggplot(sp_rel_hb, aes(x = specialization_lvl, y = migratory_behavior)) +
+  geom_point(aes(size = abs(med), fill = change_type),
+             shape = 21, stroke = 0.4, color = "black", alpha = 0.85) +
+  # Single geom_text_repel: all 8 species repel each other; segment.colour = NA suppresses line
+  geom_text_repel(
+    aes(label = label, segment.colour = seg_clr),
+    size = 5.5, fontface = "italic",
+    point.padding = 0.8, box.padding = 1,
+    min.segment.length = 0, segment.size = 1.0,
+    max.overlaps = 20, direction = "both"
+  ) +
+  scale_colour_identity() +
+  scale_fill_manual(values = bubble_colors, name = "Direction") +
+  scale_size_continuous(
+    name = "AFV relative change",
+    range = c(4, 14),
+    breaks = c(10, 50, 100, 200),
+    labels = c("10%", "50%", "100%", "200%"),
+    limits = c(10, 200) 
+  ) +
+  scale_x_discrete(
+    labels = c("generalized hummingbirds" = "Generalized",
+               "specialized hummingbirds"  = "Specialized"),
+    expand = expansion(add = 0.6)
+  ) +
+  scale_y_discrete(
+    labels = c("S2S" = "Sedentary to\nshort-distance",
+               "S"   = "Short-distance",
+               "M"   = "Medium-distance",
+               "M2L" = "Medium to\nlong-distance",
+               "L"   = "Long-distance"),
+    drop = FALSE,
+    expand = expansion(add = 0.6)
+  ) +
+  labs(
+    x = "Ecological specialization",
+    y = "Migratory behavior"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title       = element_text(size = 15),
+    legend.text        = element_text(size = 15, color = "black"),
+    legend.key.size    = unit(1.0, "cm"),
+    legend.key.height  = unit(0.6, "cm"),
+    legend.spacing.y   = unit(0.3, "cm"),
+    legend.position    = "right",
+    panel.grid.major   = element_line(color = "gray90", linewidth = 0.2),
+    panel.grid.minor   = element_blank(),
+    axis.line.x        = element_line(color = "black", linewidth = 0.6),
+    axis.line.y        = element_line(color = "black", linewidth = 0.6),
+    axis.ticks         = element_line(color = "black", linewidth = 0.6),
+    axis.ticks.length  = unit(0.2, "cm"),
+    axis.text.x        = element_text(color = "black", size = 18, margin = margin(t = 5)),
+    axis.text.y        = element_text(color = "black", size = 18, margin = margin(r = 5)),
+    axis.title         = element_text(size = 25),
+    axis.title.x       = element_text(margin = margin(t = 10)),
+    axis.title.y       = element_text(margin = margin(r = 10)),
+    plot.margin        = margin(12, 12, 12, 12)
+  ) +
+  guides(
+    fill = guide_legend(override.aes = list(size = 6), order = 1),
+    size = guide_legend(order = 2, nrow = 4, byrow = TRUE,
+                        label.theme = element_text(hjust = 0.5))
+  )
+
+png("output/Specialization_Migration_AFV_bubble.png",
+    width = 3200, height = 2000, res = 300)
+print(p_bubble)
+dev.off()
+pdf("output/Specialization_Migration_AFV_bubble.pdf",
+    width = 8, height = 5)
+print(p_bubble)
 dev.off()
 
 
