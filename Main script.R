@@ -19,13 +19,13 @@ base.yr = 1970
 end.yr = 2017
 popsource = "Pop.source"
 
-fig_palette <- c("#D55E00", 
-                 "#56B4E9", 
-                 "#009E73", 
-                 "#E69F00", 
-                 "#0072B2", 
-                 "#CC79A7", 
-                 "#999999")
+fig_palette <- c("#0072B2",  # blue — generalized hummingbirds
+                 "#D55E00",  # vermillion — specialized hummingbirds
+                 "#009E73",  # bluish green — generalized non-hummingbirds
+                 "#E69F00",  # orange
+                 "#CC79A7",  # reddish purple
+                 "#F0E442",  # yellow
+                 "#999999")  # grey
 
 set.seed(2019)
 
@@ -1963,6 +1963,15 @@ for(qt in c("lci","uci","med")){
 sp_abs_summ_biome <- sp_abs_summ[order(Breeding.Biome, med)]
 sp_abs_summ_biome$species <- factor(sp_abs_summ_biome$species, levels = sp_abs_summ_biome$species)
 
+# Biome-level AFV summary for facet strip labels
+biome_afv_lab <- sp_abs_summ[, .(
+  med = round(sum(med), 0),
+  lci = round(sum(lci), 0),
+  uci = round(sum(uci), 0)
+), by = Breeding.Biome]
+biome_afv_lab[, label := paste0(Breeding.Biome, "\n", med, " [", lci, ", ", uci, "]")]
+biome_labels <- setNames(biome_afv_lab$label, biome_afv_lab$Breeding.Biome)
+
 color_palette <- c("Decrease" = "#E69F00", "Increase" = "#56B4E9")
 
 p_abs <- ggplot(sp_abs_summ_biome, aes(x = med, y = species, fill = change_type)) +
@@ -1976,7 +1985,8 @@ p_abs <- ggplot(sp_abs_summ_biome, aes(x = med, y = species, fill = change_type)
   geom_vline(xintercept = 0, color = "black", linetype = "solid",  linewidth = 0.6) +
   scale_fill_manual(values = color_palette) +
   
-  facet_grid(Breeding.Biome ~ ., scales = "free_y", space = "free_y", switch = "y") +
+  facet_grid(Breeding.Biome ~ ., scales = "free_y", space = "free_y", switch = "y",
+             labeller = labeller(Breeding.Biome = biome_labels)) +
   
   scale_x_continuous(limits = c(-450, 600), breaks = seq(-400, 600, by = 200)) +
   
@@ -1994,7 +2004,8 @@ p_abs <- ggplot(sp_abs_summ_biome, aes(x = med, y = species, fill = change_type)
         axis.text.y = element_blank(),
         axis.title = element_text(size = 16),
         axis.title.x = element_text(margin = margin(t = 10)),
-        strip.text.y.left = element_text(angle = 0, face = "bold", hjust = 1, size = 16), 
+        strip.text.y.left = element_text(angle = 0, face = "bold", hjust = 1, size = 14,
+                                          margin = margin(r = 10)),
         strip.placement = "outside", 
         panel.spacing = unit(1, "lines") 
   )
